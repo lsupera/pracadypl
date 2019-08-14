@@ -1,14 +1,12 @@
 package jaspice;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
+import java.awt.Cursor;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -16,9 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileSystemView;
-
-import jaspice.Controller.FileButtonListener;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
@@ -32,7 +27,6 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     private JPanel chartPanel;
     private JButton fileButton;
     private String filePath;
-
     public MainFrame(ActionListener fileButtonListener) {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,6 +40,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
           
         fileButton = new JButton("Open file");
+        /*fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));*/
         fileButton.addActionListener(fileButtonListener);
         contentPane.add(getFileButton(), BorderLayout.NORTH);
 
@@ -53,7 +48,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         setVisible(true);
     }
 
-    public void addFilePanel(List vars, ListSelectionListener listSelectionListener) {
+    public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string) {
         this.vars = vars;
         
         setSize(1000, 800);
@@ -66,16 +61,24 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         chartPanel.setSize(800, 600);
 
         jListY = new JList(vars.toArray());
-        jListY.setSize(400, 600);
+        jListY.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        getjListY().setSize(400, 600);
 
-        scrollY = new JScrollPane(jListY);
+        scrollY = new JScrollPane(getjListY());
 
         contentPane.add(scrollY, BorderLayout.WEST);
 
         contentPane.add(chartPanel, BorderLayout.CENTER);
         this.listSelectionListener = listSelectionListener;
 
-        jListY.addListSelectionListener(listSelectionListener);
+        textField=new JTextField(20);
+        
+
+        
+        textField.setText("CURRENT FILE: "+string);
+        
+        contentPane.add(getNewTextField(), BorderLayout.SOUTH);
+        getjListY().addListSelectionListener(listSelectionListener);
 
         setVisible(true);
 
@@ -101,5 +104,9 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     public String getFilePath() {
         return filePath;
     }
+
+	public JList getjListY() {
+		return jListY;
+	}
 
 }
