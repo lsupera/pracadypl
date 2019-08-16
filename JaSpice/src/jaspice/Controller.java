@@ -5,10 +5,10 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
@@ -17,6 +17,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYDataset;
@@ -29,6 +30,7 @@ public class Controller {
 	private RawFileContent content;
 	private MainFrame mainFrame;
 	public String filePath;
+	private JFreeChart lineChart;
 
 	public Controller() {
 
@@ -87,39 +89,36 @@ public class Controller {
 			// int returnValue = jfc.showSaveDialog(null);
 
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
+				mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				File selectedFile = jfc.getSelectedFile();
 				filePath = selectedFile.getAbsolutePath();
 				lastPath = filePath;
-				
-				Thread t=new Thread() {
-				public void run() {
-					try {
-					
-					
-					content = Tools.rawFileReader(filePath);
-					mainFrame.addFilePanel(content.getVars(), new ListSelection(), filePath);
-					
 
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} finally {
-					mainFrame.setCursor(Cursor.getDefaultCursor());
+				Thread t = new Thread() {
+					public void run() {
+						try {
 
-				}
+							content = Tools.rawFileReader(filePath);
+							mainFrame.addFilePanel(content.getVars(), new ListSelection(), filePath,
+									new SaveButtonListener());
 
-				}
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} finally {
+							mainFrame.setCursor(Cursor.getDefaultCursor());
 
-			
-			};
-			
-			t.start();
+						}
+
+					}
+
+				};
+
+				t.start();
+			}
+
 		}
-
 	}
-	}
-	
 
 	public class ListSelection implements ListSelectionListener {
 
@@ -133,14 +132,46 @@ public class Controller {
 				for (Integer idx : v) {
 					b.append(content.getVarName(idx)).append(' ');
 				}
-				JFreeChart lineChart = ChartFactory.createXYLineChart(content.getTitle(), content.getVarName(0),
-						b.toString(), createDataset(v), PlotOrientation.VERTICAL, true, true, false);
+				lineChart = ChartFactory.createXYLineChart(content.getTitle(), content.getVarName(0), b.toString(),
+						createDataset(v), PlotOrientation.VERTICAL, true, true, false);
 
 				ChartPanel chartPanel = new ChartPanel(lineChart);
 				chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
 				mainFrame.setChartPanel(chartPanel);
 			}
 		}
+
+	}
+
+	public class SaveButtonListener implements ActionListener {
+		private String lastPath;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+
+			JFileChooser fileChooser = new JFileChooser(
+					lastPath == null ? FileSystemView.getFileSystemView().getHomeDirectory() : new File(lastPath));
+			fileChooser.setDialogTitle("Specify a file to save - use .png extension");
+			fileChooser.setFileFilter(new FileNameExtensionFilter(".png", "PNG"));
+			int userSelection = fileChooser.showSaveDialog(null);
+
+			if (userSelection == JFileChooser.APPROVE_OPTION) {
+				File fileToSave = fileChooser.getSelectedFile();
+				filePath = fileToSave.getAbsolutePath();
+				lastPath = filePath;
+				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+
+				try {
+					ChartUtilities.saveChartAsPNG(fileToSave, mainFrame.getP().getChart(), 400, 400);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+
+		}
+
 	}
 
 	public static void main(String[] args) throws Exception {

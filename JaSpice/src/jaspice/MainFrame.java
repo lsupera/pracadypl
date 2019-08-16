@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 
+import org.jfree.chart.ChartPanel;
+
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
     private JPanel contentPane;
@@ -24,9 +26,12 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     private List<Map.Entry<String, String>> vars;
     private ListSelectionListener listSelectionListener;
     private ActionListener fileActionListener;
+    private ActionListener saveButtonListener;
     private JPanel chartPanel;
     private JButton fileButton;
+    private JButton saveButton;
     private String filePath;
+    private ChartPanel p;
     public MainFrame(ActionListener fileButtonListener) {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,8 +53,9 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         setVisible(true);
     }
 
-    public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string) {
+    public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string, ActionListener saveButtonListener) {
         this.vars = vars;
+        
         
         setSize(1000, 800);
         
@@ -71,10 +77,15 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         contentPane.add(chartPanel, BorderLayout.CENTER);
         this.listSelectionListener = listSelectionListener;
 
+        
+        saveButton=new JButton("Save to file");
+        contentPane.add(saveButton,BorderLayout.EAST);
+        
+        this.saveButtonListener=saveButtonListener;
+        saveButton.addActionListener(saveButtonListener);
+        
         textField=new JTextField(20);
-        
-
-        
+                
         textField.setText("CURRENT FILE: "+string);
         
         contentPane.add(getNewTextField(), BorderLayout.SOUTH);
@@ -84,15 +95,14 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
     }
 
-    public JTextField getNewTextField() {
-        return textField;
-    }
+    
 
-    public void setChartPanel(JPanel p) {
-        contentPane.setVisible(false);
+    public void setChartPanel(ChartPanel p) {
+        this.p=p;
+    	contentPane.setVisible(false);
         contentPane.remove(chartPanel);
-        chartPanel = p;
-        contentPane.add(chartPanel, BorderLayout.CENTER);
+        chartPanel=p;
+        contentPane.add(p, BorderLayout.CENTER);
         contentPane.paint(getGraphics());
         contentPane.setVisible(true);
     }
@@ -107,6 +117,14 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 	public JList getjListY() {
 		return jListY;
+	}
+
+	public JTextField getNewTextField() {
+        return textField;
+    }
+
+	public ChartPanel getP() {
+		return p;
 	}
 
 }
