@@ -26,10 +26,10 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     private List<Map.Entry<String, String>> vars;
     private ListSelectionListener listSelectionListener;
     private ActionListener fileActionListener;
-    private ActionListener saveButtonListener;
+    private ActionListener addNextChartListener;
     private JPanel chartPanel;
     private JButton fileButton;
-    private JButton saveButton;
+    private JButton addNextChart;
     private String filePath;
     private ChartPanel p;
     public MainFrame(ActionListener fileButtonListener) {
@@ -47,13 +47,15 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         fileButton = new JButton("Open file");
         /*fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));*/
         fileButton.addActionListener(fileButtonListener);
+        
+        
         contentPane.add(getFileButton(), BorderLayout.NORTH);
 
 
         setVisible(true);
     }
 
-    public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string, ActionListener saveButtonListener) {
+    public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string, ActionListener addNextChartListener) {
         this.vars = vars;
         
         
@@ -78,11 +80,11 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         this.listSelectionListener = listSelectionListener;
 
         
-        saveButton=new JButton("Save to file");
-        contentPane.add(saveButton,BorderLayout.EAST);
+        addNextChart=new JButton("Add next chart");
+        contentPane.add(addNextChart,BorderLayout.EAST);
         
-        this.saveButtonListener=saveButtonListener;
-        saveButton.addActionListener(saveButtonListener);
+        this.addNextChartListener=addNextChartListener;
+        addNextChart.addActionListener(addNextChartListener);
         
         textField=new JTextField(20);
                 
@@ -102,7 +104,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     	contentPane.setVisible(false);
         contentPane.remove(chartPanel);
         chartPanel=p;
-        contentPane.add(p, BorderLayout.CENTER);
+        contentPane.add(chartPanel, BorderLayout.CENTER);
         contentPane.paint(getGraphics());
         contentPane.setVisible(true);
     }
