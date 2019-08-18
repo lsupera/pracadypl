@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.plot.Crosshair;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
@@ -32,6 +33,11 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     private JButton addNextChart;
     private String filePath;
     private ChartPanel p;
+    public Crosshair xCrosshair;
+    public Crosshair yCrosshair;
+
+
+    
     public MainFrame(ActionListener fileButtonListener) {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

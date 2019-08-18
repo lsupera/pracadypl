@@ -1,13 +1,15 @@
 package jaspice;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -16,12 +18,20 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.panel.CrosshairOverlay;
+import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.RectangleEdge;
 
 public class Controller {
 
@@ -143,6 +153,40 @@ public class Controller {
 				 */
 
 				ChartPanel chartPanel = new ChartPanel(lineChart);
+				
+				chartPanel.addChartMouseListener(new ChartMouseListener() {
+					
+					@Override
+					public void chartMouseMoved(ChartMouseEvent event) {
+						Rectangle2D dataArea = mainFrame.getP().getScreenDataArea();
+				        JFreeChart chart = event.getChart();
+				        XYPlot plot = (XYPlot) chart.getPlot();
+				        ValueAxis xAxis = plot.getDomainAxis();
+				        double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, 
+				                RectangleEdge.BOTTOM);
+				        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
+				        mainFrame.xCrosshair.setValue(x);
+				        mainFrame.yCrosshair.setValue(y);
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void chartMouseClicked(ChartMouseEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
+				mainFrame.xCrosshair=new  Crosshair();
+				mainFrame.yCrosshair=new Crosshair();
+				mainFrame.xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+		        mainFrame.xCrosshair.setLabelVisible(true);
+		        mainFrame.yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+		        mainFrame.yCrosshair.setLabelVisible(true);
+		        crosshairOverlay.addDomainCrosshair(mainFrame.xCrosshair);
+		        crosshairOverlay.addRangeCrosshair(mainFrame.yCrosshair);
+		        chartPanel.addOverlay(crosshairOverlay);
 				chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
 				mainFrame.setChartPanel(chartPanel);
 			}
@@ -159,6 +203,7 @@ public class Controller {
 			// TODO Auto-generated method stub
 
 			nextChart = new MainFrame(new AddNextChartFileButtonListener());
+			
 
 		}
 
@@ -241,6 +286,42 @@ public class Controller {
 					 */
 
 					ChartPanel chartPanel = new ChartPanel(lineChart);
+					chartPanel.addChartMouseListener(new ChartMouseListener() {
+						
+						@Override
+						public void chartMouseMoved(ChartMouseEvent event) {
+							Rectangle2D dataArea = nextChart.getP().getScreenDataArea();
+					        JFreeChart chart = event.getChart();
+					        XYPlot plot = (XYPlot) chart.getPlot();
+					        ValueAxis xAxis = plot.getDomainAxis();
+					        double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, 
+					                RectangleEdge.BOTTOM);
+					        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
+					        nextChart.xCrosshair.setValue(x);
+					        nextChart.yCrosshair.setValue(y);
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void chartMouseClicked(ChartMouseEvent arg0) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
+					CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
+					nextChart.xCrosshair=new  Crosshair();
+					nextChart.yCrosshair=new Crosshair();
+					nextChart.xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+			        nextChart.xCrosshair.setLabelVisible(true);
+			        nextChart.yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+			        nextChart.yCrosshair.setLabelVisible(true);
+			        crosshairOverlay.addDomainCrosshair(nextChart.xCrosshair);
+			        crosshairOverlay.addRangeCrosshair(nextChart.yCrosshair);
+			        chartPanel.addOverlay(crosshairOverlay);
+
+					
+
 					chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
 					nextChart.setChartPanel(chartPanel);
 				}
@@ -273,6 +354,10 @@ public class Controller {
 		 */
 
 	}
+	
+	
+	
+	
 
 	public static void main(String[] args) throws Exception {
 
