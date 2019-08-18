@@ -30,20 +30,21 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     private ActionListener addNextChartListener;
     private JPanel chartPanel;
     private JButton fileButton;
-    private JButton addNextChart;
+    private JButton addNextChartButton;
     private String filePath;
     private ChartPanel p;
-    public Crosshair xCrosshair;
-    public Crosshair yCrosshair;
+ 
 
 
     
     public MainFrame(ActionListener fileButtonListener) {
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 800);
         setBounds(100, 100, 450, 300);
         contentPane = new JPanel();
+        
         
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(0, 0));
@@ -51,7 +52,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
           
         fileButton = new JButton("Open file");
-        /*fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));*/
+        fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         fileButton.addActionListener(fileButtonListener);
         
         
@@ -72,6 +73,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         
 
         this.chartPanel = new JPanel();
+        
         chartPanel.setSize(800, 600);
 
         jListY = new JList(vars.toArray());
@@ -86,11 +88,12 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         this.listSelectionListener = listSelectionListener;
 
         
-        addNextChart=new JButton("Add next chart");
-        contentPane.add(addNextChart,BorderLayout.EAST);
+        addNextChartButton=new JButton("Add next chart");
+        addNextChartButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        contentPane.add(addNextChartButton,BorderLayout.EAST);
         
         this.addNextChartListener=addNextChartListener;
-        addNextChart.addActionListener(addNextChartListener);
+        addNextChartButton.addActionListener(addNextChartListener);
         
         textField=new JTextField(20);
                 
@@ -135,4 +138,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		return p;
 	}
 
+	
+
+	
 }

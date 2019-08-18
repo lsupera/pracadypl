@@ -153,6 +153,8 @@ public class Controller {
 				 */
 
 				ChartPanel chartPanel = new ChartPanel(lineChart);
+				Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+				Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
 				
 				chartPanel.addChartMouseListener(new ChartMouseListener() {
 					
@@ -165,8 +167,8 @@ public class Controller {
 				        double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, 
 				                RectangleEdge.BOTTOM);
 				        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
-				        mainFrame.xCrosshair.setValue(x);
-				        mainFrame.yCrosshair.setValue(y);
+				        xCrosshair.setValue(x);
+				        yCrosshair.setValue(y);
 						// TODO Auto-generated method stub
 						
 					}
@@ -178,14 +180,12 @@ public class Controller {
 					}
 				});
 				CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
-				mainFrame.xCrosshair=new  Crosshair();
-				mainFrame.yCrosshair=new Crosshair();
-				mainFrame.xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-		        mainFrame.xCrosshair.setLabelVisible(true);
-		        mainFrame.yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-		        mainFrame.yCrosshair.setLabelVisible(true);
-		        crosshairOverlay.addDomainCrosshair(mainFrame.xCrosshair);
-		        crosshairOverlay.addRangeCrosshair(mainFrame.yCrosshair);
+				
+				
+		        xCrosshair.setLabelVisible(true);
+		        yCrosshair.setLabelVisible(true);
+		        crosshairOverlay.addDomainCrosshair(xCrosshair);
+		        crosshairOverlay.addRangeCrosshair(yCrosshair);
 		        chartPanel.addOverlay(crosshairOverlay);
 				chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
 				mainFrame.setChartPanel(chartPanel);
@@ -286,6 +286,10 @@ public class Controller {
 					 */
 
 					ChartPanel chartPanel = new ChartPanel(lineChart);
+					
+					Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+					Crosshair yCrosshair= new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+					
 					chartPanel.addChartMouseListener(new ChartMouseListener() {
 						
 						@Override
@@ -297,8 +301,8 @@ public class Controller {
 					        double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, 
 					                RectangleEdge.BOTTOM);
 					        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
-					        nextChart.xCrosshair.setValue(x);
-					        nextChart.yCrosshair.setValue(y);
+					        xCrosshair.setValue(x);
+					        yCrosshair.setValue(y);
 							// TODO Auto-generated method stub
 							
 						}
@@ -310,14 +314,12 @@ public class Controller {
 						}
 					});
 					CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
-					nextChart.xCrosshair=new  Crosshair();
-					nextChart.yCrosshair=new Crosshair();
-					nextChart.xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-			        nextChart.xCrosshair.setLabelVisible(true);
-			        nextChart.yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-			        nextChart.yCrosshair.setLabelVisible(true);
-			        crosshairOverlay.addDomainCrosshair(nextChart.xCrosshair);
-			        crosshairOverlay.addRangeCrosshair(nextChart.yCrosshair);
+								
+					
+			        xCrosshair.setLabelVisible(true);
+			        yCrosshair.setLabelVisible(true);
+			        crosshairOverlay.addDomainCrosshair(xCrosshair);
+			        crosshairOverlay.addRangeCrosshair(yCrosshair);
 			        chartPanel.addOverlay(crosshairOverlay);
 
 					
