@@ -12,15 +12,16 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.plot.Crosshair;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
-    private JPanel contentPane;
+    
+	private JPanel contentPane;
     private JList jListY;
     private JScrollPane scrollY;
     public JTextField textField;
@@ -29,10 +30,12 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     private ActionListener fileActionListener;
     private ActionListener addNextChartListener;
     private JPanel chartPanel;
+    
     private JButton fileButton;
     private JButton addNextChartButton;
     private String filePath;
     private ChartPanel p;
+    private JFrame f1;
  
 
 
@@ -43,6 +46,8 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 800);
         setBounds(100, 100, 450, 300);
+        
+        
         contentPane = new JPanel();
         
         
@@ -77,10 +82,12 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         chartPanel.setSize(800, 600);
 
         jListY = new JList(vars.toArray());
+        
         jListY.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         getjListY().setSize(400, 600);
 
         scrollY = new JScrollPane(getjListY());
+        scrollY.setName("Y axis");
 
         contentPane.add(scrollY, BorderLayout.WEST);
 
@@ -98,6 +105,10 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
         textField=new JTextField(20);
                 
         textField.setText("CURRENT FILE: "+string);
+        
+        
+        f1 = (JFrame) SwingUtilities.windowForComponent(contentPane);
+        f1.setTitle("CURRENT FILE: "+string);
         
         contentPane.add(getNewTextField(), BorderLayout.SOUTH);
         getjListY().addListSelectionListener(listSelectionListener);

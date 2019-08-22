@@ -10,6 +10,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -22,11 +23,13 @@ import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.LogarithmicAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -40,6 +43,7 @@ public class Controller {
 	private MainFrame mainFrame;
 	public String filePath;
 	private JFreeChart lineChart;
+	
 
 	public Controller() {
 
@@ -188,6 +192,7 @@ public class Controller {
 		        crosshairOverlay.addRangeCrosshair(yCrosshair);
 		        chartPanel.addOverlay(crosshairOverlay);
 				chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
+				
 				mainFrame.setChartPanel(chartPanel);
 			}
 		}
@@ -196,13 +201,21 @@ public class Controller {
 
 	public class AddNextChartListener implements ActionListener {
 
+		
 		private MainFrame nextChart;
+		
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 
 			nextChart = new MainFrame(new AddNextChartFileButtonListener());
+			nextChart.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			
+				
+			
+			
+			
 			
 
 		}
@@ -244,7 +257,22 @@ public class Controller {
 								content = Tools.rawFileReader(filePath);
 								nextChart.addFilePanel(content.getVars(), new NextChartListSelection(), filePath,
 										new AddNextChartListener());
-
+								/*mainFrame.setVisible(false);
+								nextChart.setVisible(false);
+								
+								JFrame jFrame=new JFrame();
+																						
+								JSplitPane jSplitPane=new JSplitPane(0,(JPanel)mainFrame.getContentPane(), (JPanel)nextChart.getContentPane());
+								jFrame.add(jSplitPane);
+								jFrame.setVisible(true);
+								jFrame.setSize(800, 800);
+								
+								JFrame jFrameStore=new JFrame();*/
+								
+								
+								/*jFrameStore=jFrame;
+								jFrameStore.setVisible(true);
+								jFrameStore.setSize(400,400);*/
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -278,12 +306,12 @@ public class Controller {
 					lineChart = ChartFactory.createXYLineChart(content.getTitle(), content.getVarName(0), b.toString(),
 							createDataset(v), PlotOrientation.VERTICAL, true, true, false);
 
-					/*
-					 * XYPlot plot=lineChart.getXYPlot(); LogarithmicAxis yAxis=new
-					 * LogarithmicAxis("Y"); plot.setRangeAxis(yAxis); XYLineAndShapeRenderer
-					 * renderer = (XYLineAndShapeRenderer)plot.getRenderer();
-					 * renderer.setSeriesShapesVisible(0, true);
-					 */
+					
+					  XYPlot plot=lineChart.getXYPlot(); LogarithmicAxis yAxis=new
+					  LogarithmicAxis("Y"); plot.setRangeAxis(yAxis); XYLineAndShapeRenderer
+					  renderer = (XYLineAndShapeRenderer)plot.getRenderer();
+					  renderer.setSeriesShapesVisible(0, true);
+					 
 
 					ChartPanel chartPanel = new ChartPanel(lineChart);
 					
@@ -356,6 +384,7 @@ public class Controller {
 		 */
 
 	}
+	
 	
 	
 	

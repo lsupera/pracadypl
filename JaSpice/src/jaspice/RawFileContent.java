@@ -7,6 +7,7 @@ package jaspice;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -17,6 +18,8 @@ public class RawFileContent {
 	Map<String, String> head;
     private List<Map.Entry<String, String>> vars;
     private double[][] series;
+    private double[][] seriesModule;
+    private double[][] seriesPhase;
     private int noVars;
     private int noPoints;
 
@@ -28,7 +31,17 @@ public class RawFileContent {
         noPoints = series[0].length;
     }
 
-    @Override
+    public RawFileContent(Map<String, String> head, List<Entry<String, String>> vars, double[][] seriesModule,
+			double[][] seriesPhase) {
+    	 this.head = head;
+         this.vars = vars;
+         this.seriesModule = seriesModule;
+         this.seriesPhase=seriesPhase;
+         noVars = series.length;
+         noPoints = series[0].length;
+	}
+
+	@Override
     public String toString() {
         return head.get("title") + " : " + getNoVars() + " series of " + getNoPoints() + " points each";
     }
@@ -72,4 +85,12 @@ public class RawFileContent {
     public List<Map.Entry<String, String>> getVars() {
         return vars;
     }
+
+	public double[][] getSeriesModule() {
+		return seriesModule;
+	}
+
+	public double[][] getSeriesPhase() {
+		return seriesPhase;
+	}
 }
