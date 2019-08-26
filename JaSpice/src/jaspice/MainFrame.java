@@ -2,6 +2,7 @@ package jaspice;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
@@ -20,136 +21,130 @@ import org.jfree.chart.ChartPanel;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
-    
 	private JPanel contentPane;
-    private JList jListY;
-    private JScrollPane scrollY;
-    public JTextField textField;
-    private List<Map.Entry<String, String>> vars;
-    private ListSelectionListener listSelectionListener;
-    private ActionListener fileActionListener;
-    private ActionListener addNextChartListener;
-    private JPanel chartPanel;
-    
-    private JButton fileButton;
-    private JButton addNextChartButton;
-    private String filePath;
-    private ChartPanel p;
-    private JFrame f1;
- 
+	private JPanel filePane;
+	private JList jListY;
+	private JScrollPane scrollY;
+	public JTextField textField;
+	private List<Map.Entry<String, String>> vars;
+	private ListSelectionListener listSelectionListener;
+	private ActionListener fileActionListener;
+	private ActionListener addNextChartListener;
+	private JPanel chartPanel;
 
+	private JButton fileButton;
+	private JButton addNextChartButton;
+	private String filePath;
+	private ChartPanel p;
+	private JFrame f1;
 
-    
-    public MainFrame(ActionListener fileButtonListener) {
+	public MainFrame(ActionListener fileButtonListener) {
 
-        
-    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000, 800);
-        setBounds(100, 100, 450, 300);
-        
-        
-        contentPane = new JPanel();
-        
-        
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BorderLayout(0, 0));
-        setContentPane(contentPane);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(10000, 8000);
+		setBounds(100, 100, 450, 300);
 
-          
-        fileButton = new JButton("Open file");
-        fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        fileButton.addActionListener(fileButtonListener);
-        
-        
-        contentPane.add(getFileButton(), BorderLayout.NORTH);
+		contentPane = new JPanel();
+		//contentPane.setLayout(new FlowLayout());
+		
+		JScrollPane scrPane = new JScrollPane(contentPane);
+		
+		setContentPane(scrPane);
+		//contentPane.add(filePane, BorderLayout.SOUTH);
+		addNextChartButton = new JButton("Add next chart");
+		//contentPane.add(addNextChartButton, BorderLayout.EAST);
 
+		fileButton = new JButton("Open file");
+		fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		fileButton.addActionListener(fileButtonListener);
 
-        setVisible(true);
-    }
+		contentPane.add(getFileButton(), BorderLayout.NORTH);
 
-    public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string, ActionListener addNextChartListener) {
-        this.vars = vars;
-        
-        
-        setSize(1000, 800);
-        
-        if( scrollY != null ) contentPane.remove(scrollY);
-        if( chartPanel != null ) contentPane.remove(chartPanel);
-        
+		setVisible(true);
+	}
 
-        this.chartPanel = new JPanel();
-        
-        chartPanel.setSize(800, 600);
+	public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string) {
+		this.vars = vars;
 
-        jListY = new JList(vars.toArray());
-        
-        jListY.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        getjListY().setSize(400, 600);
+		
+		filePane = new JPanel();
 
-        scrollY = new JScrollPane(getjListY());
-        scrollY.setName("Y axis");
+		filePane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		filePane.setLayout(new BorderLayout(0, 0));
+		setSize(1000, 800);
 
-        contentPane.add(scrollY, BorderLayout.WEST);
+		if (scrollY != null)
+			filePane.remove(scrollY);
+		if (chartPanel != null)
+			filePane.remove(chartPanel);
 
-        contentPane.add(chartPanel, BorderLayout.CENTER);
-        this.listSelectionListener = listSelectionListener;
+		this.chartPanel = new JPanel();
 
-        
-        addNextChartButton=new JButton("Add next chart");
-        addNextChartButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        contentPane.add(addNextChartButton,BorderLayout.EAST);
-        
-        this.addNextChartListener=addNextChartListener;
-        addNextChartButton.addActionListener(addNextChartListener);
-        
-        textField=new JTextField(20);
-                
-        textField.setText("CURRENT FILE: "+string);
-        
-        
-        f1 = (JFrame) SwingUtilities.windowForComponent(contentPane);
-        f1.setTitle("CURRENT FILE: "+string);
-        
-        contentPane.add(getNewTextField(), BorderLayout.SOUTH);
-        getjListY().addListSelectionListener(listSelectionListener);
+		chartPanel.setSize(800, 600);
 
-        setVisible(true);
+		jListY = new JList(vars.toArray());
 
-    }
+		jListY.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		getjListY().setSize(400, 600);
 
-    
+		scrollY = new JScrollPane(getjListY());
+		scrollY.setName("Y axis");
 
-    public void setChartPanel(ChartPanel p) {
-        this.p=p;
-    	contentPane.setVisible(false);
-        contentPane.remove(chartPanel);
-        chartPanel=p;
-        contentPane.add(chartPanel, BorderLayout.CENTER);
-        contentPane.paint(getGraphics());
-        contentPane.setVisible(true);
-    }
+		filePane.add(scrollY, BorderLayout.WEST);
 
-    public JButton getFileButton() {
-        return fileButton;
-    }
+		filePane.add(chartPanel, BorderLayout.CENTER);
+		this.listSelectionListener = listSelectionListener;
 
-    public String getFilePath() {
-        return filePath;
-    }
+		
+		
+		contentPane.add(filePane);
+
+		this.addNextChartListener = addNextChartListener;
+		addNextChartButton.addActionListener(addNextChartListener);
+
+		textField = new JTextField(20);
+
+		textField.setText("CURRENT FILE: " + string);
+
+		f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
+		f1.setTitle("CURRENT FILE: " + string);
+
+		filePane.add(getNewTextField(), BorderLayout.SOUTH);
+		getjListY().addListSelectionListener(listSelectionListener);
+
+		setVisible(true);
+
+	}
+
+	
+	public void setChartPanel(ChartPanel p) {
+		this.p = p;
+		filePane.setVisible(false);
+		filePane.remove(chartPanel);
+		chartPanel = p;
+		filePane.add(chartPanel, BorderLayout.CENTER);
+		filePane.paint(getGraphics());
+		filePane.setVisible(true);
+	}
+
+	public JButton getFileButton() {
+		return fileButton;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
 
 	public JList getjListY() {
 		return jListY;
 	}
 
 	public JTextField getNewTextField() {
-        return textField;
-    }
+		return textField;
+	}
 
 	public ChartPanel getP() {
 		return p;
 	}
 
-	
-
-	
 }

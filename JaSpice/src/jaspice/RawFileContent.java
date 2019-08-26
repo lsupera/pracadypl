@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 /**
  *
  * @author jstar
@@ -31,16 +35,26 @@ public class RawFileContent {
         noPoints = series[0].length;
     }
 
-    public RawFileContent(Map<String, String> head, List<Entry<String, String>> vars, double[][] seriesModule,
-			double[][] seriesPhase) {
-    	 this.head = head;
-         this.vars = vars;
-         this.seriesModule = seriesModule;
-         this.seriesPhase=seriesPhase;
-         noVars = series.length;
-         noPoints = series[0].length;
-	}
+  
+    
+    public XYDataset createDataset(int[] variables) {
 
+		int np = getNoPoints();
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		for (Integer v : variables) {
+			XYSeries s = new XYSeries(getVarName(v));
+			double[][] cdata = getSeries();
+			for (int i = 0; i < np; i++) {
+				s.add(cdata[0][i], cdata[v][i]);
+			}
+
+			dataset.addSeries(s);
+		}
+
+		return dataset;
+	}
+    
+    
 	@Override
     public String toString() {
         return head.get("title") + " : " + getNoVars() + " series of " + getNoPoints() + " points each";
