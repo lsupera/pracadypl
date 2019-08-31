@@ -1,14 +1,16 @@
 package jaspice;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,8 +23,10 @@ import org.jfree.chart.ChartPanel;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
-	private JPanel contentPane;
-	private JPanel filePane;
+	private JInternalFrame internalFrame;
+	
+	private JDesktopPane contentPane;
+	private JDesktopPane filePane;
 	private JList jListY;
 	private JScrollPane scrollY;
 	public JTextField textField;
@@ -40,16 +44,17 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 	public MainFrame(ActionListener fileButtonListener) {
 
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(10000, 8000);
 		setBounds(100, 100, 450, 300);
 
-		contentPane = new JPanel();
+		contentPane = new JDesktopPane();
 		//contentPane.setLayout(new FlowLayout());
 		
-		JScrollPane scrPane = new JScrollPane(contentPane);
-		
-		setContentPane(scrPane);
+		this.getContentPane().add(contentPane,BorderLayout.CENTER);
+		//JScrollPane scrPane = new JScrollPane(contentPane);
+		//setContentPane(scrPane);
 		//contentPane.add(filePane, BorderLayout.SOUTH);
 		addNextChartButton = new JButton("Add next chart");
 		//contentPane.add(addNextChartButton, BorderLayout.EAST);
@@ -57,18 +62,20 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		fileButton = new JButton("Open file");
 		fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		fileButton.addActionListener(fileButtonListener);
-
+		fileButton.setBounds(149, 76, 89, 23);
+				
 		contentPane.add(getFileButton(), BorderLayout.NORTH);
-
 		setVisible(true);
 	}
 
 	public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string) {
 		this.vars = vars;
 
+		internalFrame=new JInternalFrame();
 		
-		filePane = new JPanel();
-
+		filePane = new JDesktopPane();
+		
+		internalFrame.add(filePane);
 		filePane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		filePane.setLayout(new BorderLayout(0, 0));
 		setSize(1000, 800);
@@ -97,7 +104,16 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 		
 		
-		contentPane.add(filePane);
+		
+		internalFrame.setVisible(true);
+		internalFrame.setResizable(true);
+		internalFrame.setClosable(true);
+		internalFrame.setMaximizable(true);
+		internalFrame.setBounds(100, 100, 100, 100); 
+		
+		contentPane.add(internalFrame);
+		
+		
 
 		this.addNextChartListener = addNextChartListener;
 		addNextChartButton.addActionListener(addNextChartListener);
