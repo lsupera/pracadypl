@@ -24,7 +24,7 @@ import org.jfree.chart.ChartPanel;
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 	private JInternalFrame internalFrame;
-	
+
 	private JDesktopPane contentPane;
 	private JDesktopPane filePane;
 	private JList jListY;
@@ -32,50 +32,48 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 	public JTextField textField;
 	private List<Map.Entry<String, String>> vars;
 	private ListSelectionListener listSelectionListener;
-	private ActionListener fileActionListener;
-	private ActionListener addNextChartListener;
+
 	private JPanel chartPanel;
 
 	private JButton fileButton;
-	private JButton addNextChartButton;
+
 	private String filePath;
 	private ChartPanel p;
-	private JFrame f1;
 
 	public MainFrame(ActionListener fileButtonListener) {
 
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(10000, 8000);
 		setBounds(100, 100, 450, 300);
 
 		contentPane = new JDesktopPane();
-		//contentPane.setLayout(new FlowLayout());
-		
-		this.getContentPane().add(contentPane,BorderLayout.CENTER);
-		//JScrollPane scrPane = new JScrollPane(contentPane);
-		//setContentPane(scrPane);
-		//contentPane.add(filePane, BorderLayout.SOUTH);
-		addNextChartButton = new JButton("Add next chart");
-		//contentPane.add(addNextChartButton, BorderLayout.EAST);
+		// contentPane.setLayout(new FlowLayout());
+
+		this.getContentPane().add(contentPane, BorderLayout.CENTER);
+		// JScrollPane scrPane = new JScrollPane(contentPane);
+		// setContentPane(scrPane);
+		// contentPane.add(filePane, BorderLayout.SOUTH);
+
+		// contentPane.add(addNextChartButton, BorderLayout.EAST);
 
 		fileButton = new JButton("Open file");
 		fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		fileButton.addActionListener(fileButtonListener);
 		fileButton.setBounds(149, 76, 89, 23);
-				
+
 		contentPane.add(getFileButton(), BorderLayout.NORTH);
 		setVisible(true);
 	}
 
-	public void addFilePanel(List vars, ListSelectionListener listSelectionListener, String string) {
+	public void addNewInternalFrame(List vars, ListSelectionListener listSelectionListener, String string) {
+
 		this.vars = vars;
 
-		internalFrame=new JInternalFrame();
-		
+		internalFrame = new JInternalFrame("CURRENT FILE: " + string);
+
 		filePane = new JDesktopPane();
-		
-		internalFrame.add(filePane);
+
+		getInternalFrame().add(filePane);
 		filePane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		filePane.setLayout(new BorderLayout(0, 0));
 		setSize(1000, 800);
@@ -102,38 +100,25 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		filePane.add(chartPanel, BorderLayout.CENTER);
 		this.listSelectionListener = listSelectionListener;
 
-		
-		
-		
-		internalFrame.setVisible(true);
-		internalFrame.setResizable(true);
-		internalFrame.setClosable(true);
-		internalFrame.setMaximizable(true);
-		internalFrame.setBounds(100, 100, 100, 100); 
-		
-		contentPane.add(internalFrame);
-		
-		
+		getInternalFrame().setVisible(true);
+		getInternalFrame().setResizable(true);
+		getInternalFrame().setClosable(true);
+		getInternalFrame().setMaximizable(true);
+		getInternalFrame().setBounds(100, 100, 100, 100);
 
-		this.addNextChartListener = addNextChartListener;
-		addNextChartButton.addActionListener(addNextChartListener);
+		contentPane.add(getInternalFrame());
 
-		textField = new JTextField(20);
+		// f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
+		// f1.setTitle("CURRENT FILE: " + string);
 
-		textField.setText("CURRENT FILE: " + string);
-
-		f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
-		f1.setTitle("CURRENT FILE: " + string);
-
-		filePane.add(getNewTextField(), BorderLayout.SOUTH);
 		getjListY().addListSelectionListener(listSelectionListener);
 
 		setVisible(true);
 
 	}
 
-	
 	public void setChartPanel(ChartPanel p) {
+		System.out.println(Thread.currentThread().getName());
 		this.p = p;
 		filePane.setVisible(false);
 		filePane.remove(chartPanel);
@@ -141,6 +126,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		filePane.add(chartPanel, BorderLayout.CENTER);
 		filePane.paint(getGraphics());
 		filePane.setVisible(true);
+
 	}
 
 	public JButton getFileButton() {
@@ -161,6 +147,10 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 	public ChartPanel getP() {
 		return p;
+	}
+
+	public JInternalFrame getInternalFrame() {
+		return internalFrame;
 	}
 
 }
