@@ -13,13 +13,11 @@ import java.io.FileReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.AbstractMap;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.lang.Math;
 
 /**
  *
@@ -103,11 +101,11 @@ public class Tools {
 					
 					if (i % 2== 0) {
 						seriesReal[i/2][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN).getDouble();
-						System.out.println("realpart" + i  + "," + j + "--" + seriesReal[i/2][j]);
+						//System.out.println("realpart" + i  + "," + j + "--" + seriesReal[i/2][j]);
 						// Solely for diagnostics:
 					} else {
 						seriesImaginary[i/2][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN).getDouble();
-						System.out.println("imaginary part" + i  + "," + j + "--" + seriesImaginary[i/2][j]);
+						//System.out.println("imaginary part" + i  + "," + j + "--" + seriesImaginary[i/2][j]);
 					}
 
 					/*
@@ -121,9 +119,9 @@ public class Tools {
 			for (int j = 0; j < noPoints; j++) {
 				for (int i = 0; i < noVars; i++) {
 					seriesModule[i/2][j] = java.lang.Math.sqrt(seriesReal[i/2][j] * seriesReal[i/2][j] + seriesImaginary[i/2][j] * seriesImaginary[i/2][j]);
-					System.out.println("module" + "(" + i/2 + "," + j + ")" + seriesModule[i/2][j]);
+					//System.out.println("module" + "(" + i/2 + "," + j + ")" + seriesModule[i/2][j]);
 					seriesPhase[i/2][j] = java.lang.Math.atan(seriesImaginary[i/2][j] / seriesReal[i/2][j]);
-					System.out.println("phase" + "(" + i/2 + "," + j + ")" + seriesPhase[i/2][j]);
+					//System.out.println("phase" + "(" + i/2 + "," + j + ")" + seriesPhase[i/2][j]);
 
 				}
 			}
@@ -138,7 +136,7 @@ public class Tools {
 						series[i][j] = seriesImaginary[i/2][j];
 					}
 					
-					System.out.println(series[i][j]);
+					//System.out.println(series[i][j]);
 					// Solely for diagnostics:
 
 					/*if (j == 1 || j == noPoints - 1) {

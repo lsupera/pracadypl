@@ -1,9 +1,10 @@
 package jaspice;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 
@@ -23,17 +23,15 @@ import org.jfree.chart.ChartPanel;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
-	private JInternalFrame internalFrame;
+	private ArrayList<MyInternalFrame> internalFrames = new ArrayList<>();
 
 	private JDesktopPane contentPane;
 	private JDesktopPane filePane;
-	private JList jListY;
-	private JScrollPane scrollY;
-	public JTextField textField;
-	private List<Map.Entry<String, String>> vars;
-	private ListSelectionListener listSelectionListener;
 
-	private JPanel chartPanel;
+
+	public JTextField textField;
+
+
 
 	private JButton fileButton;
 
@@ -60,74 +58,40 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		fileButton.addActionListener(fileButtonListener);
 		fileButton.setBounds(149, 76, 89, 23);
+                
+                
+                JTextField dd = new JTextField("0");
+                dd.setBounds(149, 106, 89, 23);
+                dd.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int n = Integer.parseInt(dd.getText()) - 1;
+                        JInternalFrame f = internalFrames.get(n).getInternalFrame();
+                        if( f.isVisible() )
+                            f.setVisible(false);
+                        else
+                            f.setVisible(true);
+                    }
+                });
 
 		contentPane.add(getFileButton(), BorderLayout.NORTH);
+                contentPane.add(dd, BorderLayout.SOUTH);
 		setVisible(true);
 	}
 
-	public void addNewInternalFrame(List vars, ListSelectionListener listSelectionListener, String string) {
+	public void addNewInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener, String name) {
+            
+                int id = internalFrames.size() + 1;
+            
+                MyInternalFrame nf = new MyInternalFrame( content, listSelectionListener, name + " (" + id + ")");
 
-		this.vars = vars;
-
-		internalFrame = new JInternalFrame("CURRENT FILE: " + string);
-
-		filePane = new JDesktopPane();
-
-		getInternalFrame().add(filePane);
-		filePane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		filePane.setLayout(new BorderLayout(0, 0));
-		setSize(1000, 800);
-
-		if (scrollY != null)
-			filePane.remove(scrollY);
-		if (chartPanel != null)
-			filePane.remove(chartPanel);
-
-		this.chartPanel = new JPanel();
-
-		chartPanel.setSize(800, 600);
-
-		jListY = new JList(vars.toArray());
-
-		jListY.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getjListY().setSize(400, 600);
-
-		scrollY = new JScrollPane(getjListY());
-		scrollY.setName("Y axis");
-
-		filePane.add(scrollY, BorderLayout.WEST);
-
-		filePane.add(chartPanel, BorderLayout.CENTER);
-		this.listSelectionListener = listSelectionListener;
-
-		getInternalFrame().setVisible(true);
-		getInternalFrame().setResizable(true);
-		getInternalFrame().setClosable(true);
-		getInternalFrame().setMaximizable(true);
-		getInternalFrame().setBounds(100, 100, 100, 100);
-
-		contentPane.add(getInternalFrame());
-
-		// f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
-		// f1.setTitle("CURRENT FILE: " + string);
-
-		getjListY().addListSelectionListener(listSelectionListener);
-
-		setVisible(true);
+		internalFrames.add( nf );
+                
+                
+                contentPane.add(nf.getInternalFrame());
 
 	}
 
-	public void setChartPanel(ChartPanel p) {
-		System.out.println(Thread.currentThread().getName());
-		this.p = p;
-		filePane.setVisible(false);
-		filePane.remove(chartPanel);
-		chartPanel = p;
-		filePane.add(chartPanel, BorderLayout.CENTER);
-		filePane.paint(getGraphics());
-		filePane.setVisible(true);
-
-	}
 
 	public JButton getFileButton() {
 		return fileButton;
@@ -137,9 +101,6 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		return filePath;
 	}
 
-	public JList getjListY() {
-		return jListY;
-	}
 
 	public JTextField getNewTextField() {
 		return textField;
@@ -149,8 +110,9 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		return p;
 	}
 
-	public JInternalFrame getInternalFrame() {
-		return internalFrame;
+	public MyInternalFrame getInternalFrame( int i ) {
+		return internalFrames.get(i);
 	}
+        
 
 }

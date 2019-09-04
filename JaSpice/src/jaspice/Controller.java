@@ -34,30 +34,29 @@ import org.jfree.ui.RectangleEdge;
 
 public class Controller {
 
-	private Tools tools;
-	private RawFileContent content;
+    private Tools tools;
 
-	private MainFrame mainFrame;
-	public String filePath;
-	private JFreeChart lineChart;
+    private MainFrame mainFrame;
+    public String filePath;
+    private JFreeChart lineChart;
 
-	public Controller() {
+    public Controller() {
 
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
 
-					mainFrame = new MainFrame(new FileButtonListener());
+                    mainFrame = new MainFrame(new FileButtonListener());
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-			}
-		});
-	}
+            }
+        });
+    }
 
-	/*
+    /*
 	 * private XYDataset createDataset(int[] variables) {
 	 * 
 	 * int np = content.getNoPoints(); XYSeriesCollection dataset = new
@@ -68,149 +67,142 @@ public class Controller {
 	 * dataset.addSeries(s); }
 	 * 
 	 * return dataset; }
-	 */
+     */
+    public class FileButtonListener implements ActionListener {
 
-	public class FileButtonListener implements ActionListener {
+        private String lastPath;
 
-		private String lastPath;
+        public void actionPerformed(ActionEvent e) {
 
-		public void actionPerformed(ActionEvent e) {
+            // SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+            // @Override
+            // protected Boolean doInBackground() throws Exception {
+            JFileChooser jfc = new JFileChooser(
+                    lastPath == null ? FileSystemView.getFileSystemView().getHomeDirectory() : new File(lastPath));
+            jfc.setFileFilter(new FileNameExtensionFilter(".raw", "RAW"));
+            jfc.addChoosableFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.isDirectory() || (f.isFile() && f.getName().endsWith("raw"));
+                }
 
-			// SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+                @Override
+                public String getDescription() {
+                    return "Only Spice RAW BINARY files";
+                }
+            });
 
-			// @Override
-			// protected Boolean doInBackground() throws Exception {
+            int returnValue = jfc.showOpenDialog(null);
+            // int returnValue = jfc.showSaveDialog(null);
+            Thread thread = new Thread(() -> {
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    File selectedFile = jfc.getSelectedFile();
+                    filePath = selectedFile.getAbsolutePath();
+                    lastPath = filePath;
 
-			JFileChooser jfc = new JFileChooser(
-					lastPath == null ? FileSystemView.getFileSystemView().getHomeDirectory() : new File(lastPath));
-			jfc.setFileFilter(new FileNameExtensionFilter(".raw", "RAW"));
-			jfc.addChoosableFileFilter(new FileFilter() {
-				@Override
-				public boolean accept(File f) {
-					return f.isDirectory() || (f.isFile() && f.getName().endsWith("raw"));
-				}
+                    try {
 
-				@Override
-				public String getDescription() {
-					return "Only Spice RAW BINARY files";
-				}
-			});
+                        RawFileContent content = Tools.rawFileReader(filePath);
 
-			int returnValue = jfc.showOpenDialog(null);
-			// int returnValue = jfc.showSaveDialog(null);
-			Thread thread = new Thread(() -> {
-				if (returnValue == JFileChooser.APPROVE_OPTION) {
-					mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					File selectedFile = jfc.getSelectedFile();
-					filePath = selectedFile.getAbsolutePath();
-					lastPath = filePath;
+                        ListSelection listSelection = new ListSelection();
+                        mainFrame.addNewInternalFrame(content, listSelection, filePath);
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    } finally {
+                        mainFrame.setCursor(Cursor.getDefaultCursor());
 
-					try {
+                    }
+                }
+            });
+            thread.start();
 
-						content = Tools.rawFileReader(filePath);
-						HashMap<String, RawFileContent> cache = new HashMap<String, RawFileContent>();
+        }
 
-						ListSelection listSelection = new ListSelection();
-						mainFrame.addNewInternalFrame(content.getVars(), listSelection, filePath);
-						cache.put(mainFrame.getInternalFrame().getTitle(), content);
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} finally {
-						mainFrame.setCursor(Cursor.getDefaultCursor());
+        // return null;
+    }
 
-					}
-				}
-			});
-			thread.start();
+    // };
+    // worker.execute();
+    // System.out.println(Thread.currentThread().getName());
+    // }
+    public class ListSelection implements MyListSelectionListener {
 
-		}
+        private MyInternalFrame myFrame;
 
-		// return null;
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
 
-	}
+            if (!e.getValueIsAdjusting()) {
 
-	// };
+                System.out.println(myFrame.getTitle());
+                JList<String> theList = (JList) e.getSource();
+                // Solely for diagnostics
+                // System.out.println(String.valueOf(theList.getSelectedIndex()));
+                int[] v = theList.getSelectedIndices();
+                StringBuilder b = new StringBuilder();
+                for (Integer idx : v) {
+                    b.append(myFrame.getContent().getVarName(idx)).append(' ');
+                }
 
-	// worker.execute();
-	// System.out.println(Thread.currentThread().getName());
-	// }
+                lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0), b.toString(),
+                        myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
 
-	public class ListSelection implements ListSelectionListener {
-
-		ChartPanel chartPanel;
-
-		public void valueChanged(ListSelectionEvent e) {
-
-			if (!e.getValueIsAdjusting()) {
-
-				System.out.println(mainFrame.getInternalFrame().getTitle());
-				JList<String> theList = (JList) e.getSource();
-				// Solely for diagnostics
-				// System.out.println(String.valueOf(theList.getSelectedIndex()));
-				int[] v = theList.getSelectedIndices();
-				StringBuilder b = new StringBuilder();
-				for (Integer idx : v) {
-					b.append(content.getVarName(idx)).append(' ');
-				}
-
-				lineChart = ChartFactory.createXYLineChart(content.getTitle(), content.getVarName(0), b.toString(),
-						content.createDataset(v), PlotOrientation.VERTICAL, true, true, false);
-
-				/*
+                /*
 				 * XYPlot plot=lineChart.getXYPlot(); LogarithmicAxis yAxis=new
 				 * LogarithmicAxis("Y"); plot.setRangeAxis(yAxis); XYLineAndShapeRenderer
 				 * renderer = (XYLineAndShapeRenderer)plot.getRenderer();
 				 * renderer.setSeriesShapesVisible(0, true);
-				 */
+                 */
+                ChartPanel chartPanel = new ChartPanel(lineChart);
+                // mainFrame.setChartPanel(chartPanel);
+                Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+                Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
 
-				chartPanel = new ChartPanel(lineChart);
-				// mainFrame.setChartPanel(chartPanel);
-				Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-				Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+                chartPanel.addChartMouseListener(new ChartMouseListener() {
 
-				chartPanel.addChartMouseListener(new ChartMouseListener() {
+                    @Override
+                    public void chartMouseMoved(ChartMouseEvent event) {
+                        Rectangle2D dataArea = myFrame.getChartPanel().getScreenDataArea();
+                        JFreeChart chart = event.getChart();
+                        XYPlot plot = (XYPlot) chart.getPlot();
+                        ValueAxis xAxis = plot.getDomainAxis();
+                        double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
+                        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
+                        xCrosshair.setValue(x);
+                        yCrosshair.setValue(y);
+                        // TODO Auto-generated method stub
 
-					@Override
-					public void chartMouseMoved(ChartMouseEvent event) {
-						Rectangle2D dataArea = mainFrame.getP().getScreenDataArea();
-						JFreeChart chart = event.getChart();
-						XYPlot plot = (XYPlot) chart.getPlot();
-						ValueAxis xAxis = plot.getDomainAxis();
-						double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
-						double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
-						xCrosshair.setValue(x);
-						yCrosshair.setValue(y);
-						// TODO Auto-generated method stub
+                    }
 
-					}
+                    @Override
+                    public void chartMouseClicked(ChartMouseEvent arg0) {
+                        // TODO Auto-generated method stub
 
-					@Override
-					public void chartMouseClicked(ChartMouseEvent arg0) {
-						// TODO Auto-generated method stub
+                    }
+                });
+                CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
 
-					}
-				});
-				CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
+                xCrosshair.setLabelVisible(true);
+                yCrosshair.setLabelVisible(true);
+                crosshairOverlay.addDomainCrosshair(xCrosshair);
+                crosshairOverlay.addRangeCrosshair(yCrosshair);
+                chartPanel.addOverlay(crosshairOverlay);
+                chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
+                myFrame.setChartPanel(chartPanel);
+                System.out.println(Thread.currentThread().getName());
 
-				xCrosshair.setLabelVisible(true);
-				yCrosshair.setLabelVisible(true);
-				crosshairOverlay.addDomainCrosshair(xCrosshair);
-				crosshairOverlay.addRangeCrosshair(yCrosshair);
-				chartPanel.addOverlay(crosshairOverlay);
-				chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
-				mainFrame.setChartPanel(chartPanel);
-				System.out.println(Thread.currentThread().getName());
+            }
+        }
 
-			}
-		}
+        public void setFrame(MyInternalFrame f) {
+            myFrame = f;
+        }
 
-	}
+    }
 
-	public static void main(String[] args) throws Exception {
-
-		new Controller();
-
-	}
-
+    public static void main(String[] args) {
+        new Controller();
+    }
 }
