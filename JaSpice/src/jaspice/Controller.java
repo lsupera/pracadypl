@@ -46,7 +46,7 @@ public class Controller {
             public void run() {
                 try {
 
-                    mainFrame = new MainFrame(new FileButtonListener());
+                    mainFrame = new MainFrame(new OpenFileMenuItemListener());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -66,9 +66,10 @@ public class Controller {
 	 * 
 	 * dataset.addSeries(s); }
 	 * 
+	 
 	 * return dataset; }
      */
-    public class FileButtonListener implements ActionListener {
+    public class OpenFileMenuItemListener implements ActionListener {
 
         private String lastPath;
 
@@ -106,6 +107,7 @@ public class Controller {
                         RawFileContent content = Tools.rawFileReader(filePath);
 
                         ListSelection listSelection = new ListSelection();
+                        
                         mainFrame.addNewInternalFrame(content, listSelection, filePath);
                     } catch (Exception e1) {
                         // TODO Auto-generated catch block
@@ -136,7 +138,7 @@ public class Controller {
 
             if (!e.getValueIsAdjusting()) {
 
-                System.out.println(myFrame.getTitle());
+                
                 JList<String> theList = (JList) e.getSource();
                 // Solely for diagnostics
                 // System.out.println(String.valueOf(theList.getSelectedIndex()));

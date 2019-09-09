@@ -52,7 +52,7 @@ public class MyInternalFrame {
 
         this.title = name;
 
-        internalFrame = new JInternalFrame("CURRENT FILE: " + name);
+        internalFrame = new JInternalFrame(name);
 
         filePane = new JDesktopPane();
 

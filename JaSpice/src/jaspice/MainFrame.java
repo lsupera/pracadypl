@@ -5,40 +5,34 @@ import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionListener;
 
 import org.jfree.chart.ChartPanel;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 	private ArrayList<MyInternalFrame> internalFrames = new ArrayList<>();
+	private ArrayList<JMenuItem> subMenuCloseFileItems = new ArrayList<>();
 
 	private JDesktopPane contentPane;
 	private JDesktopPane filePane;
 
-
 	public JTextField textField;
-
-
-
-	private JButton fileButton;
+	private JMenuBar jMenuBar = new JMenuBar();
+	JMenu subMenuCloseFile = new JMenu("Close");
 
 	private String filePath;
 	private ChartPanel p;
 
-	public MainFrame(ActionListener fileButtonListener) {
+	public MainFrame(ActionListener openFileMenuItemListener) {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(10000, 8000);
@@ -54,53 +48,58 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 		// contentPane.add(addNextChartButton, BorderLayout.EAST);
 
-		fileButton = new JButton("Open file");
-		fileButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		fileButton.addActionListener(fileButtonListener);
-		fileButton.setBounds(149, 76, 89, 23);
-                
-                
-                JTextField dd = new JTextField("0");
-                dd.setBounds(149, 106, 89, 23);
-                dd.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        int n = Integer.parseInt(dd.getText()) - 1;
-                        JInternalFrame f = internalFrames.get(n).getInternalFrame();
-                        if( f.isVisible() )
-                            f.setVisible(false);
-                        else
-                            f.setVisible(true);
-                    }
-                });
+		setJMenuBar(jMenuBar);
 
-		contentPane.add(getFileButton(), BorderLayout.NORTH);
-                contentPane.add(dd, BorderLayout.SOUTH);
+		JMenu fileMenu = new JMenu("File");
+
+		jMenuBar.add(fileMenu);
+
+		JMenuItem openFileMenuItem = new JMenuItem("Open file");
+
+		openFileMenuItem.addActionListener(openFileMenuItemListener);
+
+		fileMenu.add(openFileMenuItem);
+		fileMenu.add(subMenuCloseFile);
+
 		setVisible(true);
 	}
 
-	public void addNewInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener, String name) {
-            
-                int id = internalFrames.size() + 1;
-            
-                MyInternalFrame nf = new MyInternalFrame( content, listSelectionListener, name + " (" + id + ")");
+	public void addNewInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener,
+			String name) {
 
-		internalFrames.add( nf );
-                
-                
-                contentPane.add(nf.getInternalFrame());
+		int id = internalFrames.size();
 
-	}
+		MyInternalFrame nf = new MyInternalFrame(content, listSelectionListener, name + " (" + id + ")");
 
+		internalFrames.add(nf);
 
-	public JButton getFileButton() {
-		return fileButton;
+		contentPane.add(nf.getInternalFrame());
+
+		JMenuItem ni = new JMenuItem(nf.getInternalFrame().getTitle());
+		subMenuCloseFileItems.add(ni);
+
+		subMenuCloseFile.add(ni);
+		
+		
+		
+		ni.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				JInternalFrame f = internalFrames.get(id).getInternalFrame();
+				if (f.isVisible()) {
+					f.setVisible(false);
+					subMenuCloseFile.remove(subMenuCloseFileItems.get(id));}
+				else
+					f.setVisible(true);
+			}
+		});
+
 	}
 
 	public String getFilePath() {
 		return filePath;
 	}
-
 
 	public JTextField getNewTextField() {
 		return textField;
@@ -110,9 +109,8 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		return p;
 	}
 
-	public MyInternalFrame getInternalFrame( int i ) {
+	public MyInternalFrame getInternalFrame(int i) {
 		return internalFrames.get(i);
 	}
-        
 
 }
