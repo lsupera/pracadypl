@@ -56,19 +56,7 @@ public class Controller {
         });
     }
 
-    /*
-	 * private XYDataset createDataset(int[] variables) {
-	 * 
-	 * int np = content.getNoPoints(); XYSeriesCollection dataset = new
-	 * XYSeriesCollection(); for (Integer v : variables) { XYSeries s = new
-	 * XYSeries(content.getVarName(v)); double[][] cdata = content.getSeries(); for
-	 * (int i = 0; i < np; i++) { s.add(cdata[0][i], cdata[v][i]); }
-	 * 
-	 * dataset.addSeries(s); }
-	 * 
-	 
-	 * return dataset; }
-     */
+    
     public class OpenFileMenuItemListener implements ActionListener {
 
         private String lastPath;

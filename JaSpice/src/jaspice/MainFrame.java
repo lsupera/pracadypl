@@ -2,6 +2,8 @@ package jaspice;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -14,20 +16,23 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
 import org.jfree.chart.ChartPanel;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 	private ArrayList<MyInternalFrame> internalFrames = new ArrayList<>();
-	private ArrayList<JMenuItem> subMenuCloseFileItems = new ArrayList<>();
+	private ArrayList<JMenuItem> viewMenuItems = new ArrayList<>();
 
 	private JDesktopPane contentPane;
 	private JDesktopPane filePane;
 
 	public JTextField textField;
 	private JMenuBar jMenuBar = new JMenuBar();
-	JMenu subMenuCloseFile = new JMenu("Close");
+	private JMenu subMenuCloseFile = new JMenu("Close");
+	private JMenu viewMenu = new JMenu("View");
 
 	private String filePath;
 	private ChartPanel p;
@@ -39,14 +44,8 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		setBounds(100, 100, 450, 300);
 
 		contentPane = new JDesktopPane();
-		// contentPane.setLayout(new FlowLayout());
 
 		this.getContentPane().add(contentPane, BorderLayout.CENTER);
-		// JScrollPane scrPane = new JScrollPane(contentPane);
-		// setContentPane(scrPane);
-		// contentPane.add(filePane, BorderLayout.SOUTH);
-
-		// contentPane.add(addNextChartButton, BorderLayout.EAST);
 
 		setJMenuBar(jMenuBar);
 
@@ -54,12 +53,13 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 		jMenuBar.add(fileMenu);
 
+		jMenuBar.add(viewMenu);
+
 		JMenuItem openFileMenuItem = new JMenuItem("Open file");
 
 		openFileMenuItem.addActionListener(openFileMenuItemListener);
 
 		fileMenu.add(openFileMenuItem);
-		fileMenu.add(subMenuCloseFile);
 
 		setVisible(true);
 	}
@@ -76,22 +76,65 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		contentPane.add(nf.getInternalFrame());
 
 		JMenuItem ni = new JMenuItem(nf.getInternalFrame().getTitle());
-		subMenuCloseFileItems.add(ni);
+		viewMenu.add(ni);
 
-		subMenuCloseFile.add(ni);
-		
-		
-		
+		viewMenuItems.add(ni);
+
+		JInternalFrame f = internalFrames.get(id).getInternalFrame();
+
+		f.addInternalFrameListener(new InternalFrameListener() {
+
+			@Override
+			public void internalFrameOpened(InternalFrameEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void internalFrameIconified(InternalFrameEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void internalFrameDeiconified(InternalFrameEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void internalFrameDeactivated(InternalFrameEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void internalFrameClosing(InternalFrameEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void internalFrameClosed(InternalFrameEvent e) {
+				// TODO Auto-generated method stub
+				viewMenu.remove(ni);
+				System.out.println("kot");
+			}
+
+			@Override
+			public void internalFrameActivated(InternalFrameEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
 		ni.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				JInternalFrame f = internalFrames.get(id).getInternalFrame();
-				if (f.isVisible()) {
-					f.setVisible(false);
-					subMenuCloseFile.remove(subMenuCloseFileItems.get(id));}
-				else
-					f.setVisible(true);
+				f.moveToFront();
+				f.setLocation(200, 200);
+
 			}
 		});
 

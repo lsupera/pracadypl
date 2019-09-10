@@ -7,6 +7,7 @@ package jaspice;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.beans.PropertyVetoException;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JButton;
@@ -17,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.event.ListSelectionListener;
 import org.jfree.chart.ChartPanel;
 
@@ -59,7 +62,7 @@ public class MyInternalFrame {
         internalFrame.add(filePane);
         filePane.setBorder(new EmptyBorder(5, 5, 5, 5));
         filePane.setLayout(new BorderLayout(0, 0));
-        internalFrame.setSize(1000, 800);
+        
 
         jListY = new JList(vars.toArray());
 
@@ -79,6 +82,7 @@ public class MyInternalFrame {
         internalFrame.setClosable(true);
         internalFrame.setMaximizable(true);
         internalFrame.setBounds(100, 100, 600, 600);
+        
 
         // f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
         // f1.setTitle("CURRENT FILE: " + string);
