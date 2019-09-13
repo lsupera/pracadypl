@@ -129,11 +129,12 @@ public class Controller {
                 
                 JList<String> theList = (JList) e.getSource();
                 // Solely for diagnostics
-                // System.out.println(String.valueOf(theList.getSelectedIndex()));
+                System.out.println(String.valueOf(theList.getSelectedIndex()));
                 int[] v = theList.getSelectedIndices();
                 StringBuilder b = new StringBuilder();
                 for (Integer idx : v) {
                     b.append(myFrame.getContent().getVarName(idx)).append(' ');
+                    System.out.println(b);
                 }
 
                 lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0), b.toString(),

@@ -76,7 +76,9 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 				
 				JOptionPane.showMessageDialog(null, "Use open file to load a file. \n You can open multiple fiels at the same tiem.\n Navigate between files(open frames) using view menu. "
 						+ "\n If you wish to save a chart you can use save option (*.png) in file menu \n or right click on the chart (*.png, *.pdf,*.jpeg) \n "
-						+ " You cannot save anything if no chart is created."
+						+ " You cannot save anything if no chart is created.\n"
+						+ "You can create multiple charts on the same graph while selecting more than one item from \n"
+						+ " the JList in a JInternalFrame and pressing ctrl."
 						);
 			}
 			

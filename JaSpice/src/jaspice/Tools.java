@@ -57,7 +57,7 @@ public class Tools {
 
 							vars.add(new AbstractMap.SimpleEntry(f[1].trim(), f[2].trim()));
 							if (head.get("flags").equals("complex")) {
-								vars.add(new AbstractMap.SimpleEntry(f[1].trim(), f[2].trim()));
+								vars.add(new AbstractMap.SimpleEntry(f[1].trim()+"complex", f[2].trim()));
 								
 							}
 						}
