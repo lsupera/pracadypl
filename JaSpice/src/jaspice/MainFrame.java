@@ -34,6 +34,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 	public JTextField textField;
 	private JMenuBar jMenuBar = new JMenuBar();
 	private JMenu subMenuCloseFile = new JMenu("Close");
+	JMenuItem saveFileMenuItem = new JMenuItem("Save the chart for the active frame as png file (right click on the chart for pdf/jpeg)" );
 	private JMenu viewMenu = new JMenu("View");
 	private JMenu fileMenu;
 	private JMenuItem saveFileMenuitem;
@@ -109,7 +110,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 			@Override
 			public void internalFrameDeactivated(InternalFrameEvent e) {
 				// TODO Auto-generated method stub
-
+				fileMenu.remove(saveFileMenuItem);
 			}
 
 			@Override
@@ -129,8 +130,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 			@Override
 			public void internalFrameActivated(InternalFrameEvent e) {
 				// TODO Auto-generated method stub
-				JMenuItem saveFileMenuItem = new JMenuItem("Save the charto for" + f.getTitle());
-				
+								
 				fileMenu.add(saveFileMenuItem);
 				
 				saveFileMenuItem.addActionListener(new ActionListener() {
@@ -162,7 +162,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 								// TODO Auto-generated catch block
 
-								JOptionPane.showMessageDialog(null, "geen juiste kleur opgegeven, kies rood, groen of oranje");
+								JOptionPane.showMessageDialog(null, "error");
 
 							}
 						}
