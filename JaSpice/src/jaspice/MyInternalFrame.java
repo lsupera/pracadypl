@@ -7,20 +7,23 @@ package jaspice;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.beans.PropertyVetoException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JList;
-import javax.swing.JPanel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-import javax.swing.event.ListSelectionListener;
+
 import org.jfree.chart.ChartPanel;
 
 /**
@@ -47,6 +50,14 @@ public class MyInternalFrame {
     private ChartPanel chartPanel;
 
     private String title;
+    private JMenuBar axis;
+    private JMenu scale;
+    private boolean lin; 
+    private boolean log;
+    
+    private JCheckBoxMenuItem logarithmic;
+    private JCheckBoxMenuItem linear;
+    
 
     public MyInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener, String name) {
 
@@ -75,6 +86,7 @@ public class MyInternalFrame {
         filePane.add(scrollY, BorderLayout.WEST);
 
         this.listSelectionListener = listSelectionListener;
+        
         this.listSelectionListener.setFrame(this);
 
         internalFrame.setVisible(true);
@@ -83,11 +95,49 @@ public class MyInternalFrame {
         internalFrame.setMaximizable(true);
         internalFrame.setBounds(100, 100, 600, 600);
         
+        
 
         // f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
         // f1.setTitle("CURRENT FILE: " + string);
         getjListY().addListSelectionListener(listSelectionListener);
+        
+        axis=new JMenuBar();
+        internalFrame.setJMenuBar(axis);
+        
+        scale=new JMenu("Scale");
+        axis.add(scale);
+        logarithmic = new JCheckBoxMenuItem("Logarithmic");
+        linear = new JCheckBoxMenuItem("Decimal");
+        scale.add(linear);
+        linear.setState(true);
+        
+        log=false;
+        lin=true;
+        
+        linear.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				logarithmic.setState(false);
+				log=false;
+				lin=true;
+			}
+        	
+        });
+        scale.add(logarithmic);
+        
+        logarithmic.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				linear.setState(false);
+				log=true;
+				lin=false;
+			}
+		} );
+        
         internalFrame.setVisible(true);
 
     }
@@ -136,4 +186,12 @@ public class MyInternalFrame {
     public RawFileContent getContent() {
         return content;
     }
+
+	public boolean isLin() {
+		return lin;
+	}
+
+	public boolean isLog() {
+		return log;
+	}
 }

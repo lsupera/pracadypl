@@ -8,13 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.util.HashMap;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -24,11 +21,13 @@ import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.LogarithmicAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.ui.RectangleEdge;
 
@@ -140,17 +139,22 @@ public class Controller {
                 lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0), b.toString(),
                         myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
 
-                /*
-				 * XYPlot plot=lineChart.getXYPlot(); LogarithmicAxis yAxis=new
-				 * LogarithmicAxis("Y"); plot.setRangeAxis(yAxis); XYLineAndShapeRenderer
-				 * renderer = (XYLineAndShapeRenderer)plot.getRenderer();
-				 * renderer.setSeriesShapesVisible(0, true);
-                 */
+                
+				if (myFrame.isLog()==true && myFrame.isLin()==false) { 
+				
+				XYPlot plot=lineChart.getXYPlot(); 
+				 LogarithmicAxis yAxis=new LogarithmicAxis("Y"); plot.setRangeAxis(yAxis); XYLineAndShapeRenderer
+				 renderer = (XYLineAndShapeRenderer)plot.getRenderer();
+				 renderer.setSeriesShapesVisible(0, true);
+				 
+				}
+                
                 ChartPanel chartPanel = new ChartPanel(lineChart);
                 // mainFrame.setChartPanel(chartPanel);
                 Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
                 Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-
+                
+                
                 chartPanel.addChartMouseListener(new ChartMouseListener() {
 
                     @Override
