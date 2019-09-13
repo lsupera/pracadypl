@@ -82,7 +82,7 @@ public class Controller {
             });
 
             int returnValue = jfc.showOpenDialog(null);
-            // int returnValue = jfc.showSaveDialog(null);
+             
             Thread thread = new Thread(() -> {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

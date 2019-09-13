@@ -1,25 +1,27 @@
 package jaspice;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
@@ -33,9 +35,11 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 	private JMenuBar jMenuBar = new JMenuBar();
 	private JMenu subMenuCloseFile = new JMenu("Close");
 	private JMenu viewMenu = new JMenu("View");
-
+	private JMenu fileMenu;
+	private JMenuItem saveFileMenuitem;
 	private String filePath;
 	private ChartPanel p;
+	private JFileChooser fcSave;
 
 	public MainFrame(ActionListener openFileMenuItemListener) {
 
@@ -49,7 +53,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 		setJMenuBar(jMenuBar);
 
-		JMenu fileMenu = new JMenu("File");
+		fileMenu = new JMenu("File");
 
 		jMenuBar.add(fileMenu);
 
@@ -118,13 +122,53 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 			public void internalFrameClosed(InternalFrameEvent e) {
 				// TODO Auto-generated method stub
 				viewMenu.remove(ni);
-				System.out.println("kot");
+
 			}
 
+			private String lastPath;
 			@Override
 			public void internalFrameActivated(InternalFrameEvent e) {
 				// TODO Auto-generated method stub
+				JMenuItem saveFileMenuItem = new JMenuItem("Save the charto for" + f.getTitle());
+				
+				fileMenu.add(saveFileMenuItem);
+				
+				saveFileMenuItem.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
 
+						fcSave = new JFileChooser();
+						fcSave.setDialogTitle("Specify a file to save - use .png extension");
+
+						fcSave.setFileFilter(new FileNameExtensionFilter(".png", "PNG"));
+						int returnValue = fcSave.showSaveDialog(null);
+						if (returnValue == JFileChooser.APPROVE_OPTION) {
+							File fileToSave = fcSave.getSelectedFile();
+
+							filePath = fileToSave.getAbsolutePath();
+
+							lastPath = filePath;
+
+							System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+
+							try {
+
+								
+								
+								ChartUtilities.saveChartAsPNG(fileToSave, nf.getChartPanel().getChart(), 400, 400);
+								
+
+							} catch (IOException e1) {
+
+								// TODO Auto-generated catch block
+
+								JOptionPane.showMessageDialog(null, "geen juiste kleur opgegeven, kies rood, groen of oranje");
+
+							}
+						}
+
+					}
+				});
 			}
 		});
 
