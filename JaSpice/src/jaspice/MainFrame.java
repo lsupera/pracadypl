@@ -34,10 +34,12 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 	public JTextField textField;
 	private JMenuBar jMenuBar = new JMenuBar();
 	private JMenu subMenuCloseFile = new JMenu("Close");
-	JMenuItem saveFileMenuItem = new JMenuItem("Save the chart for the active frame as png file (right click on the chart for pdf/jpeg)" );
+	private JMenuItem saveFileMenuItem = new JMenuItem("Save the chart for the active frame as png file (right click on the chart for pdf/jpeg)" );
 	private JMenu viewMenu = new JMenu("View");
 	private JMenu fileMenu;
+	private JMenu helpMenu;
 	private JMenuItem saveFileMenuitem;
+	private JMenuItem instructionsHelpMenuItem;
 	private String filePath;
 	private ChartPanel p;
 	private JFileChooser fcSave;
@@ -59,6 +61,27 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		jMenuBar.add(fileMenu);
 
 		jMenuBar.add(viewMenu);
+		
+		helpMenu= new JMenu("Help");
+		jMenuBar.add(helpMenu);
+		instructionsHelpMenuItem=new JMenuItem("Instructions");
+		helpMenu.add(instructionsHelpMenuItem);
+		
+		
+		instructionsHelpMenuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				JOptionPane.showMessageDialog(null, "Use open file to load a file. \n You can open multiple fiels at the same tiem.\n Navigate between files(open frames) using view menu. "
+						+ "\n If you wish to save a chart you can use save option (*.png) in file menu \n or right click on the chart (*.png, *.pdf,*.jpeg) \n "
+						+ " You cannot save anything if no chart is created."
+						);
+			}
+			
+			
+		});
 
 		JMenuItem openFileMenuItem = new JMenuItem("Open file");
 
