@@ -5,7 +5,9 @@
  */
 package jaspice;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,12 +21,20 @@ import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import org.jfree.chart.ChartFactory;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.LogarithmicAxis;
+import org.jfree.chart.panel.CrosshairOverlay;
+import org.jfree.chart.plot.Crosshair;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
 /**
  *
@@ -39,6 +49,8 @@ public class MyInternalFrame {
     private JList jListY;
     private JScrollPane scrollY;
     public JTextField textField;
+    
+        private JFreeChart lineChart;
 
     private RawFileContent content;
     private List<Map.Entry<String, String>> vars;
@@ -119,9 +131,9 @@ public class MyInternalFrame {
                     log = false;
                     lin = true;
                     try {
-                        listSelectionListener.rebuildChart(jListY);
+                        rebuildChart(jListY);
                     } catch (IllegalLogException ex) {
-                        throw new RuntimeException("THIS VCAN NOT HAPPEN!");
+                        throw new RuntimeException("THIS CAN NOT HAPPEN!");
                     }
                 }
             }
@@ -138,15 +150,15 @@ public class MyInternalFrame {
                     log = true;
                     lin = false;
                     try {
-                        listSelectionListener.rebuildChart(jListY);
+                        rebuildChart(jListY);
                     } catch (IllegalLogException ex) {
                         logarithmic.setState(false);
                         log = false;
                         lin = true;
                         try {
-                            listSelectionListener.rebuildChart(jListY);
+                            rebuildChart(jListY);
                         } catch (IllegalLogException ex2) {
-                            throw new RuntimeException("THIS VCAN NOT HAPPEN!");
+                            throw new RuntimeException("THIS CAN NOT HAPPEN!");
                         }
                     }
                 }
@@ -155,6 +167,51 @@ public class MyInternalFrame {
 
         internalFrame.setVisible(true);
 
+    }
+
+    public void rebuildChart(JList<String> theList) throws IllegalLogException {
+        MyInternalFrame myFrame = this;
+        int[] v = theList.getSelectedIndices();
+        if (v.length == 0) {
+            return; // nothing is selected
+        }
+        StringBuilder b = new StringBuilder();
+        for (Integer idx : v) {
+            b.append(myFrame.getContent().getVarName(idx)).append(' ');
+            System.out.println(b);
+        }
+
+        lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0), b.toString(),
+                myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
+
+        if (myFrame.isLog() == true && myFrame.isLin() == false) {
+            XYPlot plot = lineChart.getXYPlot();
+            try {
+                LogarithmicAxis yAxis = new LogarithmicAxis("Y");
+                plot.setRangeAxis(yAxis);
+                XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
+                renderer.setSeriesShapesVisible(0, true);
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(myFrame.getInternalFrame(), "Log scale allowed for positive range only.");
+                throw new IllegalLogException();
+            }
+        }
+
+        ChartPanel chartPanel = new ChartPanel(lineChart);
+        Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+        Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+
+        chartPanel.addChartMouseListener(new MyChartMouseAdapter(this, xCrosshair, yCrosshair));
+        CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
+
+        xCrosshair.setLabelVisible(true);
+        yCrosshair.setLabelVisible(true);
+        crosshairOverlay.addDomainCrosshair(xCrosshair);
+        crosshairOverlay.addRangeCrosshair(yCrosshair);
+        chartPanel.addOverlay(crosshairOverlay);
+        chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
+        myFrame.setChartPanel(chartPanel);
+        System.out.println(Thread.currentThread().getName());
     }
 
     public void setChartPanel(ChartPanel p) {

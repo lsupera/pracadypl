@@ -14,5 +14,4 @@ import javax.swing.event.ListSelectionListener;
  */
 public interface MyListSelectionListener extends ListSelectionListener {
     public void setFrame( MyInternalFrame f );
-    public void rebuildChart(JList<String> theList) throws IllegalLogException;
 }
