@@ -11,6 +11,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -55,7 +56,6 @@ public class Controller {
         });
     }
 
-    
     public class OpenFileMenuItemListener implements ActionListener {
 
         private String lastPath;
@@ -80,7 +80,7 @@ public class Controller {
                 }
             });
 
-            int returnValue = jfc.showOpenDialog(null);
+            int returnValue = jfc.showOpenDialog(mainFrame);
             // int returnValue = jfc.showSaveDialog(null);
             Thread thread = new Thread(() -> {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -94,7 +94,7 @@ public class Controller {
                         RawFileContent content = Tools.rawFileReader(filePath);
 
                         ListSelection listSelection = new ListSelection();
-                        
+
                         mainFrame.addNewInternalFrame(content, listSelection, filePath);
                     } catch (Exception e1) {
                         // TODO Auto-generated catch block
@@ -109,13 +109,8 @@ public class Controller {
 
         }
 
-        // return null;
     }
 
-    // };
-    // worker.execute();
-    // System.out.println(Thread.currentThread().getName());
-    // }
     public class ListSelection implements MyListSelectionListener {
 
         private MyInternalFrame myFrame;
@@ -125,74 +120,95 @@ public class Controller {
 
             if (!e.getValueIsAdjusting()) {
 
-                
                 JList<String> theList = (JList) e.getSource();
                 // Solely for diagnostics
                 System.out.println(String.valueOf(theList.getSelectedIndex()));
-                int[] v = theList.getSelectedIndices();
-                StringBuilder b = new StringBuilder();
-                for (Integer idx : v) {
-                    b.append(myFrame.getContent().getVarName(idx)).append(' ');
-                    System.out.println(b);
+                try {
+                    rebuildChart(theList);
+                } catch (IllegalLogException ex) {
+                    // A CO TERAZ?
                 }
-
-                lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0), b.toString(),
-                        myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
-
-                
-				if (myFrame.isLog()==true && myFrame.isLin()==false) { 
-				
-				XYPlot plot=lineChart.getXYPlot(); 
-				 LogarithmicAxis yAxis=new LogarithmicAxis("Y"); plot.setRangeAxis(yAxis); XYLineAndShapeRenderer
-				 renderer = (XYLineAndShapeRenderer)plot.getRenderer();
-				 renderer.setSeriesShapesVisible(0, true);
-				 
-				}
-                
-                ChartPanel chartPanel = new ChartPanel(lineChart);
-                // mainFrame.setChartPanel(chartPanel);
-                Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-                Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-                
-                
-                chartPanel.addChartMouseListener(new ChartMouseListener() {
-
-                    @Override
-                    public void chartMouseMoved(ChartMouseEvent event) {
-                        Rectangle2D dataArea = myFrame.getChartPanel().getScreenDataArea();
-                        JFreeChart chart = event.getChart();
-                        XYPlot plot = (XYPlot) chart.getPlot();
-                        ValueAxis xAxis = plot.getDomainAxis();
-                        double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
-                        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
-                        xCrosshair.setValue(x);
-                        yCrosshair.setValue(y);
-                        // TODO Auto-generated method stub
-
-                    }
-
-                    @Override
-                    public void chartMouseClicked(ChartMouseEvent arg0) {
-                        // TODO Auto-generated method stub
-
-                    }
-                });
-                CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
-
-                xCrosshair.setLabelVisible(true);
-                yCrosshair.setLabelVisible(true);
-                crosshairOverlay.addDomainCrosshair(xCrosshair);
-                crosshairOverlay.addRangeCrosshair(yCrosshair);
-                chartPanel.addOverlay(crosshairOverlay);
-                chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
-                myFrame.setChartPanel(chartPanel);
-                System.out.println(Thread.currentThread().getName());
-
             }
+        }
+
+        @Override
+        public void rebuildChart(JList<String> theList) throws IllegalLogException {
+            int[] v = theList.getSelectedIndices();
+            if( v.length == 0 )
+                return; // nothing is selected
+            StringBuilder b = new StringBuilder();
+            for (Integer idx : v) {
+                b.append(myFrame.getContent().getVarName(idx)).append(' ');
+                System.out.println(b);
+            }
+
+            lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0), b.toString(),
+                    myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
+
+            if (myFrame.isLog() == true && myFrame.isLin() == false) {
+                XYPlot plot = lineChart.getXYPlot();
+                try {
+                    LogarithmicAxis yAxis = new LogarithmicAxis("Y");
+                    plot.setRangeAxis(yAxis);
+                    XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
+                    renderer.setSeriesShapesVisible(0, true);
+                } catch (RuntimeException ex) {
+                    JOptionPane.showMessageDialog(myFrame.getInternalFrame(), "Log scale allowed for positive range only.");
+                    throw new IllegalLogException();
+                }
+            }
+
+            ChartPanel chartPanel = new ChartPanel(lineChart);
+            Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+            Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+
+            chartPanel.addChartMouseListener(new MyChartMouseAdapter(xCrosshair, yCrosshair));
+            CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
+
+            xCrosshair.setLabelVisible(true);
+            yCrosshair.setLabelVisible(true);
+            crosshairOverlay.addDomainCrosshair(xCrosshair);
+            crosshairOverlay.addRangeCrosshair(yCrosshair);
+            chartPanel.addOverlay(crosshairOverlay);
+            chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
+            myFrame.setChartPanel(chartPanel);
+            System.out.println(Thread.currentThread().getName());
         }
 
         public void setFrame(MyInternalFrame f) {
             myFrame = f;
+        }
+
+        private class MyChartMouseAdapter implements ChartMouseListener {
+
+            Crosshair xCrosshair;
+            Crosshair yCrosshair;
+
+            public MyChartMouseAdapter(Crosshair xCrosshair, Crosshair yCrosshair) {
+                super();
+                this.xCrosshair = xCrosshair;
+                this.yCrosshair = yCrosshair;
+            }
+
+            @Override
+            public void chartMouseMoved(ChartMouseEvent event) {
+                Rectangle2D dataArea = myFrame.getChartPanel().getScreenDataArea();
+                JFreeChart chart = event.getChart();
+                XYPlot plot = (XYPlot) chart.getPlot();
+                ValueAxis xAxis = plot.getDomainAxis();
+                double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
+                double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
+                xCrosshair.setValue(x);
+                yCrosshair.setValue(y);
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void chartMouseClicked(ChartMouseEvent arg0) {
+                // TODO Auto-generated method stub
+
+            }
         }
 
     }

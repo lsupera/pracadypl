@@ -39,7 +39,7 @@ public class MyInternalFrame {
     private JList jListY;
     private JScrollPane scrollY;
     public JTextField textField;
-    
+
     private RawFileContent content;
     private List<Map.Entry<String, String>> vars;
     private MyListSelectionListener listSelectionListener;
@@ -52,12 +52,11 @@ public class MyInternalFrame {
     private String title;
     private JMenuBar axis;
     private JMenu scale;
-    private boolean lin; 
+    private boolean lin;
     private boolean log;
-    
+
     private JCheckBoxMenuItem logarithmic;
     private JCheckBoxMenuItem linear;
-    
 
     public MyInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener, String name) {
 
@@ -73,7 +72,6 @@ public class MyInternalFrame {
         internalFrame.add(filePane);
         filePane.setBorder(new EmptyBorder(5, 5, 5, 5));
         filePane.setLayout(new BorderLayout(0, 0));
-        
 
         jListY = new JList(vars.toArray());
 
@@ -86,7 +84,7 @@ public class MyInternalFrame {
         filePane.add(scrollY, BorderLayout.WEST);
 
         this.listSelectionListener = listSelectionListener;
-        
+
         this.listSelectionListener.setFrame(this);
 
         internalFrame.setVisible(true);
@@ -94,50 +92,67 @@ public class MyInternalFrame {
         internalFrame.setClosable(true);
         internalFrame.setMaximizable(true);
         internalFrame.setBounds(100, 100, 600, 600);
-        
-        
 
         // f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
         // f1.setTitle("CURRENT FILE: " + string);
         getjListY().addListSelectionListener(listSelectionListener);
-        
-        axis=new JMenuBar();
+
+        axis = new JMenuBar();
         internalFrame.setJMenuBar(axis);
-        
-        scale=new JMenu("Scale");
+
+        scale = new JMenu("Scale");
         axis.add(scale);
         logarithmic = new JCheckBoxMenuItem("Logarithmic");
         linear = new JCheckBoxMenuItem("Decimal");
         scale.add(linear);
         linear.setState(true);
-        
-        log=false;
-        lin=true;
-        
+
+        log = false;
+        lin = true;
+
         linear.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				logarithmic.setState(false);
-				log=false;
-				lin=true;
-			}
-        	
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (log == true) {
+                    logarithmic.setState(false);
+                    log = false;
+                    lin = true;
+                    try {
+                        listSelectionListener.rebuildChart(jListY);
+                    } catch (IllegalLogException ex) {
+                        throw new RuntimeException("THIS VCAN NOT HAPPEN!");
+                    }
+                }
+            }
+
         });
         scale.add(logarithmic);
-        
+
         logarithmic.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				linear.setState(false);
-				log=true;
-				lin=false;
-			}
-		} );
-        
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (log == false) {
+                    linear.setState(false);
+                    log = true;
+                    lin = false;
+                    try {
+                        listSelectionListener.rebuildChart(jListY);
+                    } catch (IllegalLogException ex) {
+                        logarithmic.setState(false);
+                        log = false;
+                        lin = true;
+                        try {
+                            listSelectionListener.rebuildChart(jListY);
+                        } catch (IllegalLogException ex2) {
+                            throw new RuntimeException("THIS VCAN NOT HAPPEN!");
+                        }
+                    }
+                }
+            }
+        });
+
         internalFrame.setVisible(true);
 
     }
@@ -145,8 +160,9 @@ public class MyInternalFrame {
     public void setChartPanel(ChartPanel p) {
         System.out.println(Thread.currentThread().getName());
         filePane.setVisible(false);
-        if( chartPanel != null )
+        if (chartPanel != null) {
             filePane.remove(chartPanel);
+        }
         chartPanel = p;
         filePane.add(chartPanel, BorderLayout.CENTER);
         filePane.paint(internalFrame.getGraphics());
@@ -182,16 +198,16 @@ public class MyInternalFrame {
     public String getTitle() {
         return title;
     }
-    
+
     public RawFileContent getContent() {
         return content;
     }
 
-	public boolean isLin() {
-		return lin;
-	}
+    public boolean isLin() {
+        return lin;
+    }
 
-	public boolean isLog() {
-		return log;
-	}
+    public boolean isLog() {
+        return log;
+    }
 }
