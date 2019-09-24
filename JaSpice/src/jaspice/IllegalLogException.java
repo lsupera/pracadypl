@@ -11,4 +11,6 @@ package jaspice;
  */
 public class IllegalLogException extends Exception {
     
+
+	
 }

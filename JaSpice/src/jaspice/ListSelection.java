@@ -7,8 +7,9 @@ package jaspice;
 
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class ListSelection implements MyListSelectionListener {
+public class ListSelection  implements MyListSelectionListener {
 
     private MyInternalFrame myFrame;
 
@@ -23,7 +24,7 @@ public class ListSelection implements MyListSelectionListener {
             try {
                 myFrame.rebuildChart(theList);
             } catch (IllegalLogException ex) {
-                // A CO TERAZ?
+                System.out.println("CO TERAZ?");
             }
         }
     }

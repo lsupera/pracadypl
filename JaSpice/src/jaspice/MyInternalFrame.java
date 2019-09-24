@@ -115,7 +115,7 @@ public class MyInternalFrame {
         scale = new JMenu("Scale");
         axis.add(scale);
         logarithmic = new JCheckBoxMenuItem("Logarithmic");
-        linear = new JCheckBoxMenuItem("Decimal");
+        linear = new JCheckBoxMenuItem("Linear");
         scale.add(linear);
         linear.setState(true);
 
@@ -188,12 +188,19 @@ public class MyInternalFrame {
             XYPlot plot = lineChart.getXYPlot();
             try {
                 LogarithmicAxis yAxis = new LogarithmicAxis("Y");
+               
                 plot.setRangeAxis(yAxis);
                 XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
                 renderer.setSeriesShapesVisible(0, true);
             } catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(myFrame.getInternalFrame(), "Log scale allowed for positive range only.");
-                throw new IllegalLogException();
+                JOptionPane.showMessageDialog(myFrame.getInternalFrame(), "The negative values or values close to zerio present in thist graph will be shown in a linear mode");
+                LogarithmicAxis yAxis = new LogarithmicAxis("Y");
+                yAxis.setAllowNegativesFlag(true);
+                plot.setRangeAxis(yAxis);
+                XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
+                renderer.setSeriesShapesVisible(0, true);
+                
+                //throw new IllegalLogException();
             }
         }
 
