@@ -245,7 +245,7 @@ public class MyInternalFrame {
 				renderer.setSeriesShapesVisible(0, true);
 			} catch (RuntimeException ex) {
 				JOptionPane.showMessageDialog(myFrame.getInternalFrame(),
-						"The negative values or values close to zerio present in thist graph will be shown in a linear mode");
+						"The negative values or values close to zerio present in thist graph on the y axis will be shown in a linear mode");
 				LogarithmicAxis yAxis = new LogarithmicAxis(b.toString());
 
 				yAxis.setAllowNegativesFlag(true);
@@ -269,13 +269,13 @@ public class MyInternalFrame {
 				renderer.setSeriesShapesVisible(0, true);
 			} catch (RuntimeException ex) {
 				JOptionPane.showMessageDialog(myFrame.getInternalFrame(),
-						"The negative values or values close to zerio present in thist graph will be shown in a linear mode");
+						"The negative values or values close to zerio present in thist graph on the x axis will be shown in a linear mode");
 
-				LogarithmicAxis xAxis = new LogarithmicAxis(myFrame.getContent().getVarName(0));
-				getPlot().setDomainAxis(xAxis);
+				LogarithmicAxis xAxis = new LogarithmicAxis(b.toString());
 
 				xAxis.setAllowNegativesFlag(true);
 
+				getPlot().setDomainAxis(xAxis);
 				XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) getPlot().getRenderer();
 				renderer.setSeriesShapesVisible(0, true);
 
