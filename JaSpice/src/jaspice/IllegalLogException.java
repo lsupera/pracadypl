@@ -5,12 +5,17 @@
  */
 package jaspice;
 
+import javax.swing.JOptionPane;
+
+import org.jfree.chart.axis.LogarithmicAxis;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+
 /**
  *
  * @author jstar
  */
 public class IllegalLogException extends Exception {
     
-
+	
 	
 }

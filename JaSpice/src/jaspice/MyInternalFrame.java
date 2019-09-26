@@ -42,236 +42,327 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
  */
 public class MyInternalFrame {
 
-    private JInternalFrame internalFrame;
+	private JInternalFrame internalFrame;
 
-    private JDesktopPane contentPane;
-    private JDesktopPane filePane;
-    private JList jListY;
-    private JScrollPane scrollY;
-    public JTextField textField;
-    
-        private JFreeChart lineChart;
+	private JDesktopPane contentPane;
+	private JDesktopPane filePane;
+	private JList jListY;
+	private JScrollPane scrollY;
+	public JTextField textField;
 
-    private RawFileContent content;
-    private List<Map.Entry<String, String>> vars;
-    private MyListSelectionListener listSelectionListener;
+	private JFreeChart lineChart;
+	private XYPlot plot;
 
-    private JButton fileButton;
+	private RawFileContent content;
+	private List<Map.Entry<String, String>> vars;
+	private MyListSelectionListener listSelectionListener;
 
-    private String filePath;
-    private ChartPanel chartPanel;
+	private JButton fileButton;
 
-    private String title;
-    private JMenuBar axis;
-    private JMenu scale;
-    private boolean lin;
-    private boolean log;
+	private String filePath;
+	private ChartPanel chartPanel;
 
-    private JCheckBoxMenuItem logarithmic;
-    private JCheckBoxMenuItem linear;
+	private String title;
+	private JMenuBar axis;
+	private JMenu scale;
+	private boolean yLin;
+	private boolean yLog;
 
-    public MyInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener, String name) {
+	private JCheckBoxMenuItem yLogarithmic;
+	private JCheckBoxMenuItem yLinear;
 
-        this.content = content;
-        this.vars = content.getVars();
+	private boolean xLin;
+	private boolean xLog;
 
-        this.title = name;
+	private JCheckBoxMenuItem xLogarithmic;
+	private JCheckBoxMenuItem xLinear;
 
-        internalFrame = new JInternalFrame(name);
+	public MyInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener, String name) {
 
-        filePane = new JDesktopPane();
+		this.content = content;
+		this.vars = content.getVars();
 
-        internalFrame.add(filePane);
-        filePane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        filePane.setLayout(new BorderLayout(0, 0));
+		this.title = name;
 
-        jListY = new JList(vars.toArray());
+		internalFrame = new JInternalFrame(name);
 
-        jListY.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        getjListY().setSize(400, 600);
+		filePane = new JDesktopPane();
 
-        scrollY = new JScrollPane(getjListY());
-        scrollY.setName("Y axis");
+		internalFrame.add(filePane);
+		filePane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		filePane.setLayout(new BorderLayout(0, 0));
 
-        filePane.add(scrollY, BorderLayout.WEST);
+		jListY = new JList(vars.toArray());
 
-        this.listSelectionListener = listSelectionListener;
+		jListY.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		getjListY().setSize(400, 600);
 
-        this.listSelectionListener.setFrame(this);
+		scrollY = new JScrollPane(getjListY());
+		scrollY.setName("Y axis");
 
-        internalFrame.setVisible(true);
-        internalFrame.setResizable(true);
-        internalFrame.setClosable(true);
-        internalFrame.setMaximizable(true);
-        internalFrame.setBounds(100, 100, 600, 600);
+		filePane.add(scrollY, BorderLayout.WEST);
 
-        // f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
-        // f1.setTitle("CURRENT FILE: " + string);
-        getjListY().addListSelectionListener(listSelectionListener);
+		this.listSelectionListener = listSelectionListener;
 
-        axis = new JMenuBar();
-        internalFrame.setJMenuBar(axis);
+		this.listSelectionListener.setFrame(this);
 
-        scale = new JMenu("Scale");
-        axis.add(scale);
-        logarithmic = new JCheckBoxMenuItem("Logarithmic");
-        linear = new JCheckBoxMenuItem("Linear");
-        scale.add(linear);
-        linear.setState(true);
+		internalFrame.setVisible(true);
+		internalFrame.setResizable(true);
+		internalFrame.setClosable(true);
+		internalFrame.setMaximizable(true);
+		internalFrame.setBounds(100, 100, 600, 600);
 
-        log = false;
-        lin = true;
+		// f1 = (JFrame) SwingUtilities.windowForComponent(filePane);
+		// f1.setTitle("CURRENT FILE: " + string);
+		getjListY().addListSelectionListener(listSelectionListener);
 
-        linear.addActionListener(new ActionListener() {
+		axis = new JMenuBar();
+		internalFrame.setJMenuBar(axis);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (log == true) {
-                    logarithmic.setState(false);
-                    log = false;
-                    lin = true;
-                    try {
-                        rebuildChart(jListY);
-                    } catch (IllegalLogException ex) {
-                        throw new RuntimeException("THIS CAN NOT HAPPEN!");
-                    }
-                }
-            }
+		scale = new JMenu("Scale");
+		axis.add(scale);
+		yLogarithmic = new JCheckBoxMenuItem("Y axis Logarithmic");
+		yLinear = new JCheckBoxMenuItem("Y axis Linear");
+		scale.add(yLinear);
+		yLinear.setState(true);
 
-        });
-        scale.add(logarithmic);
+		yLog = false;
+		yLin = true;
 
-        logarithmic.addActionListener(new ActionListener() {
+		yLinear.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (log == false) {
-                    linear.setState(false);
-                    log = true;
-                    lin = false;
-                    try {
-                        rebuildChart(jListY);
-                    } catch (IllegalLogException ex) {
-                        logarithmic.setState(false);
-                        log = false;
-                        lin = true;
-                        try {
-                            rebuildChart(jListY);
-                        } catch (IllegalLogException ex2) {
-                            throw new RuntimeException("THIS CAN NOT HAPPEN!");
-                        }
-                    }
-                }
-            }
-        });
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (yLog == true) {
+					yLogarithmic.setState(false);
+					yLog = false;
+					yLin = true;
+					// try {
+					rebuildChart(jListY);
+					/*
+					 * } catch (IllegalLogException ex) { /*throw new
+					 * RuntimeException("THIS CAN NOT HAPPEN!"); }
+					 */
+				}
+			}
 
-        internalFrame.setVisible(true);
+		});
+		scale.add(yLogarithmic);
 
-    }
+		yLogarithmic.addActionListener(new ActionListener() {
 
-    public void rebuildChart(JList<String> theList) throws IllegalLogException {
-        MyInternalFrame myFrame = this;
-        int[] v = theList.getSelectedIndices();
-        if (v.length == 0) {
-            return; // nothing is selected
-        }
-        StringBuilder b = new StringBuilder();
-        for (Integer idx : v) {
-            b.append(myFrame.getContent().getVarName(idx)).append(' ');
-            System.out.println(b);
-        }
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (yLog == false) {
+					yLinear.setState(false);
+					yLog = true;
+					yLin = false;
+					// try {
+					rebuildChart(jListY);
+					/*
+					 * } catch (IllegalLogException ex) { logarithmic.setState(false); log = false;
+					 * lin = true; try { rebuildChart(jListY); } catch (IllegalLogException ex2) {
+					 * //throw new RuntimeException("THIS CAN NOT HAPPEN!"); } }
+					 */
+				}
+			}
+		});
 
-        lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0), b.toString(),
-                myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
+		xLogarithmic = new JCheckBoxMenuItem("X axis Logarithmic");
+		xLinear = new JCheckBoxMenuItem("X axis Linear");
+		scale.add(xLinear);
+		xLinear.setState(true);
 
-        if (myFrame.isLog() == true && myFrame.isLin() == false) {
-            XYPlot plot = lineChart.getXYPlot();
-            try {
-                LogarithmicAxis yAxis = new LogarithmicAxis("Y");
-               
-                plot.setRangeAxis(yAxis);
-                XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
-                renderer.setSeriesShapesVisible(0, true);
-            } catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(myFrame.getInternalFrame(), "The negative values or values close to zerio present in thist graph will be shown in a linear mode");
-                LogarithmicAxis yAxis = new LogarithmicAxis("Y");
-                yAxis.setAllowNegativesFlag(true);
-                plot.setRangeAxis(yAxis);
-                XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
-                renderer.setSeriesShapesVisible(0, true);
-                
-                //throw new IllegalLogException();
-            }
-        }
+		xLog = false;
+		xLin = true;
 
-        ChartPanel chartPanel = new ChartPanel(lineChart);
-        Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-        Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+		xLinear.addActionListener(new ActionListener() {
 
-        chartPanel.addChartMouseListener(new MyChartMouseAdapter(this, xCrosshair, yCrosshair));
-        CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (xLog == true) {
+					xLogarithmic.setState(false);
+					xLog = false;
+					xLin = true;
+					// try {
+					rebuildChart(jListY);
+					/*
+					 * } catch (IllegalLogException ex) { /*throw new
+					 * RuntimeException("THIS CAN NOT HAPPEN!"); }
+					 */
+				}
+			}
 
-        xCrosshair.setLabelVisible(true);
-        yCrosshair.setLabelVisible(true);
-        crosshairOverlay.addDomainCrosshair(xCrosshair);
-        crosshairOverlay.addRangeCrosshair(yCrosshair);
-        chartPanel.addOverlay(crosshairOverlay);
-        chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
-        myFrame.setChartPanel(chartPanel);
-        System.out.println(Thread.currentThread().getName());
-    }
+		});
+		scale.add(xLogarithmic);
 
-    public void setChartPanel(ChartPanel p) {
-        System.out.println(Thread.currentThread().getName());
-        filePane.setVisible(false);
-        if (chartPanel != null) {
-            filePane.remove(chartPanel);
-        }
-        chartPanel = p;
-        filePane.add(chartPanel, BorderLayout.CENTER);
-        filePane.paint(internalFrame.getGraphics());
-        filePane.setVisible(true);
-        internalFrame.repaint();
+		xLogarithmic.addActionListener(new ActionListener() {
 
-    }
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (xLog == false) {
+					xLinear.setState(false);
+					xLog = true;
+					xLin = false;
+					// try {
+					rebuildChart(jListY);
+					/*
+					 * } catch (IllegalLogException ex) { logarithmic.setState(false); log = false;
+					 * lin = true; try { rebuildChart(jListY); } catch (IllegalLogException ex2) {
+					 * //throw new RuntimeException("THIS CAN NOT HAPPEN!"); } }
+					 */
+				}
+			}
+		});
 
-    public JButton getFileButton() {
-        return fileButton;
-    }
+		internalFrame.setVisible(true);
 
-    public String getFilePath() {
-        return filePath;
-    }
+	}
 
-    public JList getjListY() {
-        return jListY;
-    }
+	public void rebuildChart(JList<String> theList) /* throws IllegalLogException */ {
+		MyInternalFrame myFrame = this;
+		int[] v = theList.getSelectedIndices();
+		if (v.length == 0) {
+			return; // nothing is selected
+		}
+		StringBuilder b = new StringBuilder();
+		for (Integer idx : v) {
+			b.append(myFrame.getContent().getVarName(idx)).append(' ');
+			System.out.println(b);
+		}
 
-    public JTextField getNewTextField() {
-        return textField;
-    }
+		lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0),
+				b.toString(), myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
 
-    public ChartPanel getChartPanel() {
-        return chartPanel;
-    }
+		if (myFrame.isYlog() == true && myFrame.isYlin() == false) {
+			plot = lineChart.getXYPlot();
+			try {
+				LogarithmicAxis yAxis = new LogarithmicAxis(b.toString());
 
-    public JInternalFrame getInternalFrame() {
-        return internalFrame;
-    }
+				getPlot().setRangeAxis(yAxis);
 
-    public String getTitle() {
-        return title;
-    }
+				XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) getPlot().getRenderer();
+				renderer.setSeriesShapesVisible(0, true);
+			} catch (RuntimeException ex) {
+				JOptionPane.showMessageDialog(myFrame.getInternalFrame(),
+						"The negative values or values close to zerio present in thist graph will be shown in a linear mode");
+				LogarithmicAxis yAxis = new LogarithmicAxis(b.toString());
 
-    public RawFileContent getContent() {
-        return content;
-    }
+				yAxis.setAllowNegativesFlag(true);
 
-    public boolean isLin() {
-        return lin;
-    }
+				getPlot().setRangeAxis(yAxis);
+				XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) getPlot().getRenderer();
+				renderer.setSeriesShapesVisible(0, true);
 
-    public boolean isLog() {
-        return log;
-    }
+				// throw new IllegalLogException();
+			}
+		}
+
+		if (myFrame.isXlog() == true && myFrame.isXlin() == false) {
+			plot = lineChart.getXYPlot();
+			try {
+
+				LogarithmicAxis xAxis = new LogarithmicAxis(myFrame.getContent().getVarName(0));
+
+				getPlot().setDomainAxis(xAxis);
+				XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) getPlot().getRenderer();
+				renderer.setSeriesShapesVisible(0, true);
+			} catch (RuntimeException ex) {
+				JOptionPane.showMessageDialog(myFrame.getInternalFrame(),
+						"The negative values or values close to zerio present in thist graph will be shown in a linear mode");
+
+				LogarithmicAxis xAxis = new LogarithmicAxis(myFrame.getContent().getVarName(0));
+				getPlot().setDomainAxis(xAxis);
+
+				xAxis.setAllowNegativesFlag(true);
+
+				XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) getPlot().getRenderer();
+				renderer.setSeriesShapesVisible(0, true);
+
+				// throw new IllegalLogException();
+			}
+		}
+
+		ChartPanel chartPanel = new ChartPanel(lineChart);
+		Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+		Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+
+		chartPanel.addChartMouseListener(new MyChartMouseAdapter(this, xCrosshair, yCrosshair));
+		CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
+
+		xCrosshair.setLabelVisible(true);
+		yCrosshair.setLabelVisible(true);
+		crosshairOverlay.addDomainCrosshair(xCrosshair);
+		crosshairOverlay.addRangeCrosshair(yCrosshair);
+		chartPanel.addOverlay(crosshairOverlay);
+		chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
+		myFrame.setChartPanel(chartPanel);
+		System.out.println(Thread.currentThread().getName());
+	}
+
+	public void setChartPanel(ChartPanel p) {
+		System.out.println(Thread.currentThread().getName());
+		filePane.setVisible(false);
+		if (chartPanel != null) {
+			filePane.remove(chartPanel);
+		}
+		chartPanel = p;
+		filePane.add(chartPanel, BorderLayout.CENTER);
+		filePane.paint(internalFrame.getGraphics());
+		filePane.setVisible(true);
+		internalFrame.repaint();
+
+	}
+
+	public JButton getFileButton() {
+		return fileButton;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public JList getjListY() {
+		return jListY;
+	}
+
+	public JTextField getNewTextField() {
+		return textField;
+	}
+
+	public ChartPanel getChartPanel() {
+		return chartPanel;
+	}
+
+	public JInternalFrame getInternalFrame() {
+		return internalFrame;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public RawFileContent getContent() {
+		return content;
+	}
+
+	public boolean isXlin() {
+		return xLin;
+	}
+
+	public boolean isXlog() {
+		return xLog;
+	}
+
+	public boolean isYlin() {
+		return yLin;
+	}
+
+	public boolean isYlog() {
+		return yLog;
+	}
+
+	public XYPlot getPlot() {
+		return plot;
+	}
 }
