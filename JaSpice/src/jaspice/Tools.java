@@ -27,10 +27,14 @@ public class Tools {
 
 	
 	public static Map<Character,String> units=new HashMap<>();
-	static {units.put('v', "Volts");
-	units.put('i',"Apms");
-	units.put('t',"seconds");
-	units.put('f',"Herz");}
+	static {units.put('v', "Volt");
+	units.put('i',"Apm");
+	units.put('t',"sec");
+	units.put('f',"Herz");
+	units.put('r',"Ohm");
+	units.put('l',"Henry");
+	units.put('c',"Faraday");
+	}
 	
 	
 	public static RawFileContent rawFileReader(String fileName) throws Exception {
