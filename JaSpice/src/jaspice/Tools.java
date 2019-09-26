@@ -25,8 +25,17 @@ import java.util.Map;
  */
 public class Tools {
 
+	
+	public static Map<Character,String> units=new HashMap<>();
+	static {units.put('v', "Volts");
+	units.put('i',"Apms");
+	units.put('t',"seconds");
+	units.put('f',"Herz");}
+	
+	
 	public static RawFileContent rawFileReader(String fileName) throws Exception {
 
+				
 		String[] keys = { "title", "date", "plotname", "flags", "no. variables", "no. points", "variables", "binary" };
 		Arrays.sort(keys);
 		BufferedReader b = new BufferedReader(new FileReader(fileName));

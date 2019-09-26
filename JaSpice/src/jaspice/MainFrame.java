@@ -103,7 +103,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 		internalFrames.add(nf);
 
-		contentPane.add(nf.getInternalFrame());
+		contentPane.add(nf.getInternalFrame(),100);
 
 		JMenuItem ni = new JMenuItem(nf.getInternalFrame().getTitle());
 		viewMenu.add(ni);

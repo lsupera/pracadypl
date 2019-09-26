@@ -231,13 +231,13 @@ public class MyInternalFrame {
 			System.out.println(b);
 		}
 
-		lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0),
-				b.toString(), myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
+		lineChart = ChartFactory.createXYLineChart(myFrame.getContent().getTitle(), myFrame.getContent().getVarName(0)+"["+Tools.units.get(myFrame.getContent().getVarName(0).charAt(0))+"]",
+				b.toString()+"["+Tools.units.get(b.toString().charAt(0))+"]", myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
 
 		if (myFrame.isYlog() == true && myFrame.isYlin() == false) {
 			plot = lineChart.getXYPlot();
 			try {
-				LogarithmicAxis yAxis = new LogarithmicAxis(b.toString());
+				LogarithmicAxis yAxis = new LogarithmicAxis(b.toString()+"["+Tools.units.get(b.toString().charAt(0))+"]");
 
 				getPlot().setRangeAxis(yAxis);
 
@@ -246,7 +246,7 @@ public class MyInternalFrame {
 			} catch (RuntimeException ex) {
 				JOptionPane.showMessageDialog(myFrame.getInternalFrame(),
 						"The negative values or values close to zerio present in thist graph on the y axis will be shown in a linear mode");
-				LogarithmicAxis yAxis = new LogarithmicAxis(b.toString());
+				LogarithmicAxis yAxis = new LogarithmicAxis(b.toString()+"["+Tools.units.get(b.toString().charAt(0))+"]");
 
 				yAxis.setAllowNegativesFlag(true);
 
@@ -262,7 +262,7 @@ public class MyInternalFrame {
 			plot = lineChart.getXYPlot();
 			try {
 
-				LogarithmicAxis xAxis = new LogarithmicAxis(myFrame.getContent().getVarName(0));
+				LogarithmicAxis xAxis = new LogarithmicAxis(myFrame.getContent().getVarName(0)+"["+Tools.units.get(myFrame.getContent().getVarName(0).charAt(0))+"]");
 
 				getPlot().setDomainAxis(xAxis);
 				XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) getPlot().getRenderer();
@@ -271,7 +271,7 @@ public class MyInternalFrame {
 				JOptionPane.showMessageDialog(myFrame.getInternalFrame(),
 						"The negative values or values close to zerio present in thist graph on the x axis will be shown in a linear mode");
 
-				LogarithmicAxis xAxis = new LogarithmicAxis(b.toString());
+				LogarithmicAxis xAxis = new LogarithmicAxis(myFrame.getContent().getVarName(0)+"["+Tools.units.get(myFrame.getContent().getVarName(0).charAt(0))+"]");
 
 				xAxis.setAllowNegativesFlag(true);
 
