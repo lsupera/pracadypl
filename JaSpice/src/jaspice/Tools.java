@@ -69,10 +69,12 @@ public class Tools {
 						if (f.length == 3 || f.length == 4) {
 
 							vars.add(new AbstractMap.SimpleEntry(f[1].trim(), f[2].trim()));
+							
 							if (head.get("flags").equals("complex")) {
 								vars.add(new AbstractMap.SimpleEntry(f[1].trim()+" ", f[2].trim()));
 								
 							}
+							
 						}
 					}
 				} else {

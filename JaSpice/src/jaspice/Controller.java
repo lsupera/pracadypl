@@ -91,10 +91,8 @@ public class Controller {
                     try {
 
                         RawFileContent content = Tools.rawFileReader(filePath);
-
-                        ListSelection listSelection = new ListSelection();
-
-                        mainFrame.addNewInternalFrame(content, listSelection, filePath);
+                                                
+                        mainFrame.addNewInternalFrame(content, new ListSelection(), filePath);
                     } catch (Exception e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();

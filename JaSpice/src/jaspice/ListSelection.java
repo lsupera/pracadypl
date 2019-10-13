@@ -13,7 +13,7 @@ import javax.swing.event.ListSelectionListener;
 import org.jfree.chart.axis.LogarithmicAxis;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
-public class ListSelection  implements MyListSelectionListener {
+public class  ListSelection  implements ListSelectionListener {
 
     private MyInternalFrame myFrame;
 

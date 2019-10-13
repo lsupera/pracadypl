@@ -55,7 +55,7 @@ public class MyInternalFrame {
 
 	private RawFileContent content;
 	private List<Map.Entry<String, String>> vars;
-	private MyListSelectionListener listSelectionListener;
+	private ListSelection listSelectionListener;
 
 	private JButton fileButton;
 
@@ -77,7 +77,7 @@ public class MyInternalFrame {
 	private JCheckBoxMenuItem xLogarithmic;
 	private JCheckBoxMenuItem xLinear;
 
-	public MyInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener, String name) {
+	public MyInternalFrame(RawFileContent content, ListSelection listSelectionListener, String name) {
 
 		this.content = content;
 		this.vars = content.getVars();
@@ -235,7 +235,7 @@ public class MyInternalFrame {
 				b.toString()+"["+Tools.units.get(b.toString().charAt(0))+"]", myFrame.getContent().createDataset(v), PlotOrientation.VERTICAL, true, true, false);
 
 		if (myFrame.isYlog() == true && myFrame.isYlin() == false) {
-			plot = lineChart.getXYPlot();
+			plot = getLineChart().getXYPlot();
 			try {
 				LogarithmicAxis yAxis = new LogarithmicAxis(b.toString()+"["+Tools.units.get(b.toString().charAt(0))+"]");
 
@@ -259,7 +259,7 @@ public class MyInternalFrame {
 		}
 
 		if (myFrame.isXlog() == true && myFrame.isXlin() == false) {
-			plot = lineChart.getXYPlot();
+			plot = getLineChart().getXYPlot();
 			try {
 
 				LogarithmicAxis xAxis = new LogarithmicAxis(myFrame.getContent().getVarName(0)+"["+Tools.units.get(myFrame.getContent().getVarName(0).charAt(0))+"]");
@@ -283,7 +283,7 @@ public class MyInternalFrame {
 			}
 		}
 
-		ChartPanel chartPanel = new ChartPanel(lineChart);
+		ChartPanel chartPanel = new ChartPanel(getLineChart(), true, true, true, true, true);
 		Crosshair xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
 		Crosshair yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
 
@@ -364,5 +364,9 @@ public class MyInternalFrame {
 
 	public XYPlot getPlot() {
 		return plot;
+	}
+
+	public JFreeChart getLineChart() {
+		return lineChart;
 	}
 }

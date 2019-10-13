@@ -25,6 +25,7 @@ import org.jfree.chart.ChartUtilities;
 
 public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
+	
 	private ArrayList<MyInternalFrame> internalFrames = new ArrayList<>();
 	private ArrayList<JMenuItem> viewMenuItems = new ArrayList<>();
 
@@ -34,7 +35,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 	public JTextField textField;
 	private JMenuBar jMenuBar = new JMenuBar();
 	private JMenu subMenuCloseFile = new JMenu("Close");
-	private JMenuItem saveFileMenuItem = new JMenuItem("Save the chart for the active frame as png file (right click on the chart for pdf/jpeg)" );
+	private JMenuItem saveFileMenuItem = new JMenuItem("Save the chart for the chosen frame as *.png file (right click on the chart for pdf/jpeg files)" );
 	private JMenu viewMenu = new JMenu("View");
 	private JMenu fileMenu;
 	private JMenu helpMenu;
@@ -46,12 +47,15 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 	public MainFrame(ActionListener openFileMenuItemListener) {
 
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(10000, 8000);
 		setBounds(100, 100, 450, 300);
 
 		contentPane = new JDesktopPane();
 
+		this.setTitle("PLOTspice. L.Supera - bachelor's thesis.");
+		this.setAlwaysOnTop(true);
 		this.getContentPane().add(contentPane, BorderLayout.CENTER);
 
 		setJMenuBar(jMenuBar);
@@ -74,12 +78,15 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				
-				JOptionPane.showMessageDialog(null, "Use open file to load a file. \n You can open multiple fiels at the same tiem.\n Navigate between files(open frames) using view menu. "
-						+ "\n If you wish to save a chart you can use save option (*.png) in file menu \n or right click on the chart (*.png, *.pdf,*.jpeg) \n "
+				JOptionPane.showMessageDialog(MainFrame.this, "Use open file to load a *.raw file. \n You can load multiple files at the same tiem.\n Navigate between files(open frames) using view menu. "
+						+ "\n If you wish to save a chart you can use save option (*.png) in file menu (active for a currently selected frame) \n or right click on the chart (*.png, *.pdf,*.jpeg) \n "
 						+ " You cannot save anything if no chart is created.\n"
 						+ "You can create multiple charts on the same graph while selecting more than one item from \n"
-						+ " the JList in a JInternalFrame and pressing ctrl."
-						);
+						+ " the JList in a JInternalFrame and pressing ctrl.\n"
+						+ " You can switch between linear and logarithmic scale (for x, y or both axes).\n"
+						+ " If you choose a log scale in case of negative values a warning will appear ant the respective values will be shown in linear mode.\n"
+						+ "Right click also for print, zoom, scale and range options."
+						, "PLOTspice instructions", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
 			
@@ -94,7 +101,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 		setVisible(true);
 	}
 
-	public void addNewInternalFrame(RawFileContent content, MyListSelectionListener listSelectionListener,
+	public void addNewInternalFrame(RawFileContent content, ListSelection listSelectionListener,
 			String name) {
 
 		int id = internalFrames.size();
@@ -103,16 +110,18 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 		internalFrames.add(nf);
 
+		
+		
 		contentPane.add(nf.getInternalFrame(),100);
 
-		JMenuItem ni = new JMenuItem(nf.getInternalFrame().getTitle());
-		viewMenu.add(ni);
+		JMenuItem viewMenuItem = new JMenuItem(nf.getInternalFrame().getTitle());
+		viewMenu.add(viewMenuItem);
 
-		viewMenuItems.add(ni);
+		viewMenuItems.add(viewMenuItem);
 
-		JInternalFrame f = internalFrames.get(id).getInternalFrame();
+		//JInternalFrame f = internalFrames.get(id).getInternalFrame();
 
-		f.addInternalFrameListener(new InternalFrameListener() {
+		nf.getInternalFrame().addInternalFrameListener(new InternalFrameListener() {
 
 			@Override
 			public void internalFrameOpened(InternalFrameEvent e) {
@@ -147,7 +156,7 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 			@Override
 			public void internalFrameClosed(InternalFrameEvent e) {
 				// TODO Auto-generated method stub
-				viewMenu.remove(ni);
+				viewMenu.remove(viewMenuItem);
 
 			}
 
@@ -159,9 +168,11 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 				fileMenu.add(saveFileMenuItem);
 				
 				saveFileMenuItem.addActionListener(new ActionListener() {
+					
 					@Override
 					public void actionPerformed(ActionEvent e) {
 
+						if (nf.getLineChart()!=null) {
 						fcSave = new JFileChooser();
 						fcSave.setDialogTitle("Specify a file to save - use .png extension");
 
@@ -187,22 +198,27 @@ public class MainFrame extends JFrame /* implements ListSelectionListener */ {
 
 								// TODO Auto-generated catch block
 
-								JOptionPane.showMessageDialog(null, "error");
+								System.out.println("lipasica");
 
 							}
 						}
 
 					}
+						else {
+							JOptionPane.showMessageDialog(null, "Create a chart in the chosen frame before saving");
+						}
+						
+					}
 				});
 			}
 		});
 
-		ni.addActionListener(new ActionListener() {
+		viewMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				f.moveToFront();
-				f.setLocation(200, 200);
+				nf.getInternalFrame().moveToFront();
+				nf.getInternalFrame().setLocation(200, 200);
 
 			}
 		});

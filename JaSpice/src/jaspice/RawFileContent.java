@@ -22,8 +22,7 @@ public class RawFileContent {
 	Map<String, String> head;
     private List<Map.Entry<String, String>> vars;
     private double[][] series;
-    private double[][] seriesModule;
-    private double[][] seriesPhase;
+    
     private int noVars;
     private int noPoints;
 
@@ -71,9 +70,9 @@ public class RawFileContent {
         return getVars().get(i).getKey();
     }
 
-    public String getVarUnit(int i) {
+    /*public String getVarUnit(int i) {
         return getVars().get(i).getValue();
-    }
+    }*/
 
     /**
      * @return the series
@@ -100,11 +99,5 @@ public class RawFileContent {
         return vars;
     }
 
-	public double[][] getSeriesModule() {
-		return seriesModule;
-	}
 
-	public double[][] getSeriesPhase() {
-		return seriesPhase;
-	}
 }
