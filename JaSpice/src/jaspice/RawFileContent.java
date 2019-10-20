@@ -7,8 +7,6 @@ package jaspice;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -71,8 +69,7 @@ public class RawFileContent {
     }
 
     /*public String getVarUnit(int i) {
-        return getVars().get(i).getValue();
-    }*/
+   
 
     /**
      * @return the series

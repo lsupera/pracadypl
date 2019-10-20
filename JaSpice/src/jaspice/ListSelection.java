@@ -6,12 +6,8 @@
 package jaspice;
 
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import org.jfree.chart.axis.LogarithmicAxis;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
 public class  ListSelection  implements ListSelectionListener {
 
@@ -26,7 +22,7 @@ public class  ListSelection  implements ListSelectionListener {
             // Solely for diagnostics
             System.out.println(String.valueOf(theList.getSelectedIndex()));
             //try {
-                myFrame.rebuildChart(theList);
+                myFrame.rebuildChart.rebuildChart(theList);
             //} catch (IllegalLogException ex) {
                 
             	
@@ -36,7 +32,7 @@ public class  ListSelection  implements ListSelectionListener {
         }
     }
 
-    public void setFrame(MyInternalFrame f) {
+     void setFrame(MyInternalFrame f) {
         myFrame = f;
     }
 }
