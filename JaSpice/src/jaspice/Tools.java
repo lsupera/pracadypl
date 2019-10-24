@@ -102,49 +102,49 @@ public class Tools {
 			double[][] seriesModule = new double[noVars / 2][noPoints];
 			double[][] seriesPhase = new double[noVars / 2][noPoints];
 			byte[] tempByte = new byte[8];
-			
+
 			for (int j = 0; j < noPoints; j++) {
 				int even = 0;
 				int odd = 0;
-				
+
 				for (int i = 0; i < noVars; i++) {
 					for (int bn = 0; bn < 8; bn++) {
 						tempByte[(int) bn] = in.readByte();
 					}
-					
+
 					if (i % 2 == 0) {
-						
+
 						seriesReal[even][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN).getDouble();
 						System.out.println("realpart" + even + "," + j + "--" + seriesReal[even][j]);
 						even++;
 					} else {
-						
-						seriesImaginary[odd][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN)
-								.getDouble();
+
+						seriesImaginary[odd][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN).getDouble();
 						System.out.println("imaginary part" + odd + "," + j + "--" + seriesImaginary[odd][j]);
 						odd++;
 					}
-
-					
 
 				}
 			}
 
 			for (int j = 0; j < noPoints; j++) {
-				
-				for (int i = 0; i < noVars/2; i++) {
-					
-					seriesModule[i ][j] = java.lang.Math.sqrt(seriesReal[i][j] * seriesReal[i][j]
-							+ seriesImaginary[i][j] * seriesImaginary[i][j]);
-					System.out.println("module" + "(" + i + "," + j + ")" +
-					seriesModule[i][j]);
-					
-					if   (seriesReal[i][j]!=-0) {
-					seriesPhase[i][j] = java.lang.Math.atan(seriesImaginary[i][j] / seriesReal[i][j]);
-					System.out.println("phase" + "(" + i + "," + j + ")" +
-					seriesPhase[i][j]);}
-					else {
-						seriesPhase[i][j]=90;
+
+				for (int i = 0; i < noVars / 2; i++) {
+
+					seriesModule[i][j] = java.lang.Math
+							.sqrt(seriesReal[i][j] * seriesReal[i][j] + seriesImaginary[i][j] * seriesImaginary[i][j]);
+					System.out.println("module" + "(" + i + "," + j + ")" + seriesModule[i][j]);
+
+					if (seriesReal[i][j] !=0) {
+						seriesPhase[i][j] = java.lang.Math.atan(seriesImaginary[i][j] / seriesReal[i][j]);
+						System.out.println("phase" + "(" + i + "," + j + ")" + seriesPhase[i][j]);
+					} else {
+						if (seriesImaginary[i][j]>0) {
+						seriesPhase[i][j] = 90;
+						}
+						else {
+							seriesPhase[i][j] = -90;
+						}
 					}
 
 				}
@@ -163,14 +163,6 @@ public class Tools {
 						series[i][j] = seriesPhase[odd][j];
 						odd++;
 					}
-
-					// System.out.println(series[i][j]);
-					// Solely for diagnostics:
-
-					/*
-					 * if (j == 1 || j == noPoints - 1) { System.out.println("(" + i + "," + j +
-					 * ")->" + series[i][j]); }
-					 */
 
 				}
 			}
