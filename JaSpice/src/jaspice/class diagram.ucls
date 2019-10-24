@@ -3,7 +3,7 @@
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="jaspice.MainFrame" project="JaSpice" file="/JaSpice/src/jaspice/MainFrame.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="519" width="674" x="956" y="139"/>    
+    <position height="55" width="456" x="970" y="151"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -66,7 +66,7 @@
   </class>  
   <class id="8" language="java" name="javax.swing.JFrame" project="JaSpice" 
     file="C:/Program Files/Java/jdk1.8.0_101/jre/lib/rt.jar" binary="true" corner="BOTTOM_RIGHT">    
-    <position height="264" width="187" x="1259" y="-207"/>    
+    <position height="53" width="226" x="1259" y="-207"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      

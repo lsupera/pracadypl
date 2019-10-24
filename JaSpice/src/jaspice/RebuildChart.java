@@ -18,10 +18,9 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 public class RebuildChart {
 	MyInternalFrame myFrame;
 	private JFreeChart lineChart;
-	
 
 	public void rebuildChart(JList<String> theList) /* throws IllegalLogException */ {
-		
+
 		int[] v = theList.getSelectedIndices();
 		if (v.length == 0) {
 			return; // nothing is selected
@@ -60,7 +59,6 @@ public class RebuildChart {
 				XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) myFrame.getPlot().getRenderer();
 				renderer.setSeriesShapesVisible(0, true);
 
-				
 			}
 		}
 
@@ -105,12 +103,11 @@ public class RebuildChart {
 		chartPanel.addOverlay(crosshairOverlay);
 		chartPanel.setPreferredSize(new java.awt.Dimension(900, 800));
 		myFrame.setChartPanel(chartPanel);
-		System.out.println(Thread.currentThread().getName());
+
 	}
-	
+
 	public void setMyInternalFrame(MyInternalFrame f) {
-		myFrame=f;
+		myFrame = f;
 	}
-	
-	
+
 }

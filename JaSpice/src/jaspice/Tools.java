@@ -25,21 +25,19 @@ import java.util.Map;
  */
 public class Tools {
 
-	
-	public static Map<Character,String> units=new HashMap<>();
-	static {units.put('v', "Volt");
-	units.put('i',"Apm");
-	units.put('t',"sec");
-	units.put('f',"Herz");
-	units.put('r',"Ohm");
-	units.put('l',"Henry");
-	units.put('c',"Faraday");
+	public static Map<Character, String> units = new HashMap<>();
+	static {
+		units.put('v', "Volt");
+		units.put('i', "Apm");
+		units.put('t', "sec");
+		units.put('f', "Herz");
+		units.put('r', "Ohm");
+		units.put('l', "Henry");
+		units.put('c', "Faraday");
 	}
-	
-	
+
 	public static RawFileContent rawFileReader(String fileName) throws Exception {
 
-				
 		String[] keys = { "title", "date", "plotname", "flags", "no. variables", "no. points", "variables", "binary" };
 		Arrays.sort(keys);
 		BufferedReader b = new BufferedReader(new FileReader(fileName));
@@ -69,12 +67,12 @@ public class Tools {
 						if (f.length == 3 || f.length == 4) {
 
 							vars.add(new AbstractMap.SimpleEntry(f[1].trim(), f[2].trim()));
-							
+
 							if (head.get("flags").equals("complex")) {
-								vars.add(new AbstractMap.SimpleEntry(f[1].trim()+" ", f[2].trim()));
-								
+								vars.add(new AbstractMap.SimpleEntry(f[1].trim() + " ", f[2].trim()));
+
 							}
-							
+
 						}
 					}
 				} else {
@@ -88,7 +86,6 @@ public class Tools {
 
 		if (head.get("flags").equals("complex")) {
 
-			
 			DataInputStream in = new DataInputStream(new FileInputStream(fileName));
 			byte c;
 			while (n > 1) {
@@ -98,45 +95,57 @@ public class Tools {
 			}
 			c = in.readByte();
 			// Solely for diagnostics: System.out.println("\nLast byte " + (char) c);
-			int noVars = Integer.parseInt(head.get("no. variables"))*2;
+			int noVars = Integer.parseInt(head.get("no. variables")) * 2;
 			int noPoints = Integer.parseInt(head.get("no. points"));
-			double[][] seriesReal = new double[noVars/2][noPoints];
-			double[][] seriesImaginary = new double[noVars/2][noPoints];
-			double[][] seriesModule = new double[noVars/2][noPoints];
-			double[][] seriesPhase = new double[noVars/2][noPoints];
+			double[][] seriesReal = new double[noVars / 2][noPoints];
+			double[][] seriesImaginary = new double[noVars / 2][noPoints];
+			double[][] seriesModule = new double[noVars / 2][noPoints];
+			double[][] seriesPhase = new double[noVars / 2][noPoints];
 			byte[] tempByte = new byte[8];
-
+			
 			for (int j = 0; j < noPoints; j++) {
+				int even = 0;
+				int odd = 0;
+				
 				for (int i = 0; i < noVars; i++) {
 					for (int bn = 0; bn < 8; bn++) {
 						tempByte[(int) bn] = in.readByte();
 					}
 					
-					
-					
-					if (i % 2== 0) {
-						seriesReal[i/2][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN).getDouble();
-						//System.out.println("realpart" + i  + "," + j + "--" + seriesReal[i/2][j]);
-						// Solely for diagnostics:
+					if (i % 2 == 0) {
+						
+						seriesReal[even][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN).getDouble();
+						System.out.println("realpart" + even + "," + j + "--" + seriesReal[even][j]);
+						even++;
 					} else {
-						seriesImaginary[i/2][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN).getDouble();
-						//System.out.println("imaginary part" + i  + "," + j + "--" + seriesImaginary[i/2][j]);
+						
+						seriesImaginary[odd][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN)
+								.getDouble();
+						System.out.println("imaginary part" + odd + "," + j + "--" + seriesImaginary[odd][j]);
+						odd++;
 					}
 
-					/*
-					 * if (j == 1 || j == noPoints - 1) { System.out.println("(" + i + "," + j +
-					 * ")->" + series[i][j]); }
-					 */
+					
 
 				}
 			}
 
 			for (int j = 0; j < noPoints; j++) {
-				for (int i = 0; i < noVars; i++) {
-					seriesModule[i/2][j] = java.lang.Math.sqrt(seriesReal[i/2][j] * seriesReal[i/2][j] + seriesImaginary[i/2][j] * seriesImaginary[i/2][j]);
-					//System.out.println("module" + "(" + i/2 + "," + j + ")" + seriesModule[i/2][j]);
-					seriesPhase[i/2][j] = java.lang.Math.atan(seriesImaginary[i/2][j] / seriesReal[i/2][j]);
-					//System.out.println("phase" + "(" + i/2 + "," + j + ")" + seriesPhase[i/2][j]);
+				
+				for (int i = 0; i < noVars/2; i++) {
+					
+					seriesModule[i ][j] = java.lang.Math.sqrt(seriesReal[i][j] * seriesReal[i][j]
+							+ seriesImaginary[i][j] * seriesImaginary[i][j]);
+					System.out.println("module" + "(" + i + "," + j + ")" +
+					seriesModule[i][j]);
+					
+					if   (seriesReal[i][j]!=-0) {
+					seriesPhase[i][j] = java.lang.Math.atan(seriesImaginary[i][j] / seriesReal[i][j]);
+					System.out.println("phase" + "(" + i + "," + j + ")" +
+					seriesPhase[i][j]);}
+					else {
+						seriesPhase[i][j]=90;
+					}
 
 				}
 			}
@@ -144,19 +153,24 @@ public class Tools {
 			double[][] series = new double[noVars][noPoints];
 
 			for (int j = 0; j < noPoints; j++) {
+				int even = 0;
+				int odd = 0;
 				for (int i = 0; i < noVars; i++) {
 					if (i % 2 == 0) {
-						series[i][j] = seriesReal[i/2][j];
+						series[i][j] = seriesModule[even][j];
+						even++;
 					} else {
-						series[i][j] = seriesImaginary[i/2][j];
+						series[i][j] = seriesPhase[odd][j];
+						odd++;
 					}
-					
-					//System.out.println(series[i][j]);
+
+					// System.out.println(series[i][j]);
 					// Solely for diagnostics:
 
-					/*if (j == 1 || j == noPoints - 1) {
-						System.out.println("(" + i + "," + j + ")->" + series[i][j]);
-					}*/
+					/*
+					 * if (j == 1 || j == noPoints - 1) { System.out.println("(" + i + "," + j +
+					 * ")->" + series[i][j]); }
+					 */
 
 				}
 			}
@@ -217,12 +231,13 @@ public class Tools {
 					}
 
 					series[i][j] = ByteBuffer.wrap(tempByte).order(ByteOrder.LITTLE_ENDIAN).getDouble();
-					//System.out.println(series[i][j]);
+					// System.out.println(series[i][j]);
 					// Solely for diagnostics:
 
-					/*if (j == 1 || j == noPoints - 1) {
-						System.out.println("(" + i + "," + j + ")->" + series[i][j]);
-					}*/
+					/*
+					 * if (j == 1 || j == noPoints - 1) { System.out.println("(" + i + "," + j +
+					 * ")->" + series[i][j]); }
+					 */
 
 				}
 			}

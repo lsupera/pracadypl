@@ -174,13 +174,9 @@ public class MyInternalFrame {
 					xLogarithmic.setState(false);
 					xLog = false;
 					xLin = true;
-					// try {
 
 					rebuildChart.rebuildChart(jListY);
-					/*
-					 * } catch (IllegalLogException ex) { /*throw new
-					 * RuntimeException("THIS CAN NOT HAPPEN!"); }
-					 */
+
 				}
 			}
 
@@ -212,7 +208,7 @@ public class MyInternalFrame {
 	}
 
 	public void setChartPanel(ChartPanel p) {
-		System.out.println(Thread.currentThread().getName());
+		
 		filePane.setVisible(false);
 		if (chartPanel != null) {
 			filePane.remove(chartPanel);

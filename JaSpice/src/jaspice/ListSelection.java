@@ -9,30 +9,25 @@ import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class  ListSelection  implements ListSelectionListener {
+public class ListSelection implements ListSelectionListener {
 
-    private MyInternalFrame myFrame;
+	private MyInternalFrame myFrame;
 
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
 
-        if (!e.getValueIsAdjusting()) {
+		if (!e.getValueIsAdjusting()) {
 
-            JList<String> theList = (JList) e.getSource();
-            // Solely for diagnostics
-            System.out.println(String.valueOf(theList.getSelectedIndex()));
-            //try {
-                myFrame.rebuildChart.rebuildChart(theList);
-            //} catch (IllegalLogException ex) {
-                
-            	
-            	
-            	System.out.println("CO TERAZ?");
-            //}
-        }
-    }
+			JList<String> theList = (JList) e.getSource();
 
-     void setFrame(MyInternalFrame f) {
-        myFrame = f;
-    }
+			System.out.println(String.valueOf(theList.getSelectedIndex()));
+
+			myFrame.rebuildChart.rebuildChart(theList);
+
+		}
+	}
+
+	void setFrame(MyInternalFrame f) {
+		myFrame = f;
+	}
 }
