@@ -16,7 +16,7 @@ import org.jfree.chart.ChartUtilities;
 
 public class MyInternalFrameListener implements InternalFrameListener {
 
-	private MainFrame mainFrame;
+	//private MainFrame mainFrame;
 	private MyInternalFrame myFrame;
 
 	@Override
@@ -40,7 +40,7 @@ public class MyInternalFrameListener implements InternalFrameListener {
 	@Override
 	public void internalFrameDeactivated(InternalFrameEvent e) {
 		// TODO Auto-generated method stub
-		mainFrame.getFileMenu().remove(mainFrame.getSaveFileMenuItem());
+		MainFrame.getMainFrame().getFileMenu().remove(MainFrame.getMainFrame().getSaveFileMenuItem());
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class MyInternalFrameListener implements InternalFrameListener {
 	@Override
 	public void internalFrameClosed(InternalFrameEvent e) {
 		// TODO Auto-generated method stub
-		mainFrame.getViewMenu().remove(mainFrame.getViewMenuItems().get(myFrame.getInternalFrame().getTitle()));
+		MainFrame.getMainFrame().getViewMenu().remove(MainFrame.getMainFrame().getViewMenuItems().get(myFrame.getInternalFrame().getTitle()));
 
 	}
 
@@ -62,9 +62,9 @@ public class MyInternalFrameListener implements InternalFrameListener {
 	public void internalFrameActivated(InternalFrameEvent e) {
 		// TODO Auto-generated method stub
 
-		mainFrame.getFileMenu().add(mainFrame.getSaveFileMenuItem());
+		MainFrame.getMainFrame().getFileMenu().add(MainFrame.getMainFrame().getSaveFileMenuItem());
 
-		mainFrame.getSaveFileMenuItem().addActionListener(new ActionListener() {
+		MainFrame.getMainFrame().getSaveFileMenuItem().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -107,9 +107,7 @@ public class MyInternalFrameListener implements InternalFrameListener {
 		});
 	}
 
-	public void setFrame(MainFrame f) {
-		mainFrame = f;
-	}
+	
 
 	public void setFrame(MyInternalFrame f) {
 		myFrame = f;

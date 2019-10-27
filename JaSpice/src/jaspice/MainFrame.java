@@ -28,15 +28,20 @@ public class MainFrame extends JFrame {
 	private JMenuItem saveFileMenuItem = new JMenuItem(
 			"Save the chart for the chosen frame as *.png file (right click on the chart for pdf/jpeg files)");
 	private JMenu viewMenu = new JMenu("View");
-	private JMenu fileMenu;
-	private JMenu helpMenu;
+	private JMenu fileMenu=new JMenu("File");
+	private JMenu helpMenu = new JMenu("Help");
 	private JMenuItem saveFileMenuitem;
 	private JMenuItem instructionsHelpMenuItem;
 	private String filePath;
 	private ChartPanel p;
 
-	public MainFrame(ActionListener openFileMenuItemListener) {
+	
+	
+	private static MainFrame mainFrame=new MainFrame(new OpenFileMenuItemListener());
+	
+	private  MainFrame(OpenFileMenuItemListener openFileMenuItemListener) {
 
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(10000, 8000);
 		setBounds(100, 100, 450, 300);
@@ -49,21 +54,17 @@ public class MainFrame extends JFrame {
 
 		setJMenuBar(jMenuBar);
 
-		fileMenu = new JMenu("File");
-
 		jMenuBar.add(getFileMenu());
 
 		jMenuBar.add(getViewMenu());
 
-		helpMenu = new JMenu("Help");
 		jMenuBar.add(helpMenu);
 		instructionsHelpMenuItem = new JMenuItem("Instructions");
 		helpMenu.add(instructionsHelpMenuItem);
-		
-		helpMenuListener myHelpMenuListener=new helpMenuListener();
+
+		HelpMenuListener myHelpMenuListener = new HelpMenuListener();
 		myHelpMenuListener.setFrame(this);
 		instructionsHelpMenuItem.addActionListener(myHelpMenuListener);
-		
 
 		JMenuItem openFileMenuItem = new JMenuItem("Open file");
 
@@ -92,7 +93,7 @@ public class MainFrame extends JFrame {
 
 		getViewMenu().add(viewMenuItem);
 
-		internalFrameListener.setFrame(this);
+		//internalFrameListener.setFrame(this);
 
 		viewMenuItem.addActionListener(new ActionListener() {
 			@Override
@@ -144,6 +145,10 @@ public class MainFrame extends JFrame {
 
 	public Map<String, JMenuItem> getViewMenuItems() {
 		return viewMenuItems;
+	}
+
+	public static MainFrame getMainFrame() {
+		return mainFrame;
 	}
 
 }

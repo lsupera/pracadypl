@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
-public class helpMenuListener implements ActionListener {
+public class HelpMenuListener implements ActionListener {
 	MainFrame mainFrame;
 	@Override
 	public void actionPerformed(ActionEvent e) {

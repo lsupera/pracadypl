@@ -68,12 +68,7 @@ public class RawFileContent {
         return getVars().get(i).getKey();
     }
 
-    /*public String getVarUnit(int i) {
-   
-
-    /**
-     * @return the series
-     */
+    
     public double[][] getSeries() {
         return series;
     }

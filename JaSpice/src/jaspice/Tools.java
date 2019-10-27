@@ -33,7 +33,7 @@ public class Tools {
 		units.put('f', "Herz");
 		units.put('r', "Ohm");
 		units.put('l', "Henry");
-		units.put('c', "Faraday");
+		units.put('c', "Farad");
 	}
 
 	public static RawFileContent rawFileReader(String fileName) throws Exception {
