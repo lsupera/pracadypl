@@ -21,10 +21,7 @@ public class Controller {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-
-					/*OpenFileMenuItemListener openFileMenuItemListener=new OpenFileMenuItemListener();
-					mainFrame = new MainFrame(openFileMenuItemListener);
-					openFileMenuItemListener.setFrame(mainFrame);*/
+										
 					MainFrame.getMainFrame();
 
 				} catch (Exception e) {

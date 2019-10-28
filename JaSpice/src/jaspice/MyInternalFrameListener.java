@@ -16,7 +16,7 @@ import org.jfree.chart.ChartUtilities;
 
 public class MyInternalFrameListener implements InternalFrameListener {
 
-	//private MainFrame mainFrame;
+	// private MainFrame mainFrame;
 	private MyInternalFrame myFrame;
 
 	@Override
@@ -52,7 +52,8 @@ public class MyInternalFrameListener implements InternalFrameListener {
 	@Override
 	public void internalFrameClosed(InternalFrameEvent e) {
 		// TODO Auto-generated method stub
-		MainFrame.getMainFrame().getViewMenu().remove(MainFrame.getMainFrame().getViewMenuItems().get(myFrame.getInternalFrame().getTitle()));
+		MainFrame.getMainFrame().getViewMenu()
+				.remove(MainFrame.getMainFrame().getViewMenuItems().get(myFrame.getInternalFrame().getTitle()));
 
 	}
 
@@ -106,8 +107,6 @@ public class MyInternalFrameListener implements InternalFrameListener {
 			}
 		});
 	}
-
-	
 
 	public void setFrame(MyInternalFrame f) {
 		myFrame = f;

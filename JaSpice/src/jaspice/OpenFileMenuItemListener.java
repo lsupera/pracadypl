@@ -48,7 +48,7 @@ public class OpenFileMenuItemListener implements ActionListener {
 
 					RawFileContent content = Tools.rawFileReader(filePath);
 
-					MainFrame.getMainFrame().addNewInternalFrame(content, new ListSelection(), filePath,
+					MainFrame.getMainFrame().addNewInternalFrame(content, filePath,
 							new MyInternalFrameListener());
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block

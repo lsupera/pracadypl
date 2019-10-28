@@ -49,29 +49,30 @@ public class MyInternalFrame {
 	private ChartPanel chartPanel;
 
 	private String title;
-	private JMenuBar axis;
-	private JMenu scale;
+	private JMenuBar axisMenuBar;
+	private JMenu scaleMenu;
 	private boolean yLin;
 	private boolean yLog;
 
-	private JCheckBoxMenuItem yLogarithmic;
-	private JCheckBoxMenuItem yLinear;
-	RebuildChart rebuildChart = new RebuildChart();
+	private JCheckBoxMenuItem yLogarithmicCheckBoxMenuItem;
+	private JCheckBoxMenuItem yLinearCheckBoxMenuItem;
+	private RebuildChart rebuildChart = new RebuildChart();
 	private boolean xLin;
 	private boolean xLog;
 
-	private JCheckBoxMenuItem xLogarithmic;
-	private JCheckBoxMenuItem xLinear;
+	private JCheckBoxMenuItem xLogarithmicCheckBoxMenuItem;
+	private JCheckBoxMenuItem xLinearCheckBoxMenuItem;
 
 	public MyInternalFrame(RawFileContent content, ListSelection listSelectionListener, String name,
 			MyInternalFrameListener internalFrameListener) {
 
-		rebuildChart.setMyInternalFrame(this);
+		getRebuildChart().setMyInternalFrame(this);
 		this.content = content;
 		this.vars = content.getVars();
 
 		this.title = name;
-
+		ScaleMenuListner scaleMenuListener = new ScaleMenuListner();
+		scaleMenuListener.setFrame(this);
 		internalFrame = new JInternalFrame(name);
 
 		filePane = new JDesktopPane();
@@ -85,7 +86,7 @@ public class MyInternalFrame {
 
 		jListY = new JList(vars.toArray());
 
-		jListY.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		getjListY().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		getjListY().setSize(400, 600);
 
 		scrollY = new JScrollPane(getjListY());
@@ -104,111 +105,41 @@ public class MyInternalFrame {
 
 		getjListY().addListSelectionListener(listSelectionListener);
 
-		axis = new JMenuBar();
-		internalFrame.setJMenuBar(axis);
+		axisMenuBar = new JMenuBar();
+		internalFrame.setJMenuBar(axisMenuBar);
 
-		scale = new JMenu("Scale");
-		axis.add(scale);
-		yLogarithmic = new JCheckBoxMenuItem("Y axis Logarithmic");
-		yLinear = new JCheckBoxMenuItem("Y axis Linear");
-		scale.add(yLinear);
-		yLinear.setState(true);
+		scaleMenu = new JMenu("Scale");
+		axisMenuBar.add(scaleMenu);
 
-		yLog = false;
-		yLin = true;
+		yLogarithmicCheckBoxMenuItem = new JCheckBoxMenuItem("Y axis Logarithmic");
 
-		yLinear.addActionListener(new ActionListener() {
+		yLinearCheckBoxMenuItem = new JCheckBoxMenuItem("Y axis Linear");
+		yLinearCheckBoxMenuItem.setState(true);
+		scaleMenu.add(yLinearCheckBoxMenuItem);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (yLog == true) {
-					yLogarithmic.setState(false);
-					yLog = false;
-					yLin = true;
-					// try {
+		yLinearCheckBoxMenuItem.addActionListener(scaleMenuListener);
 
-					rebuildChart.rebuildChart(jListY);
-					/*
-					 * } catch (IllegalLogException ex) { /*throw new
-					 * RuntimeException("THIS CAN NOT HAPPEN!"); }
-					 */
-				}
-			}
+		scaleMenu.add(yLogarithmicCheckBoxMenuItem);
 
-		});
-		scale.add(yLogarithmic);
+		yLogarithmicCheckBoxMenuItem.addActionListener(scaleMenuListener);
 
-		yLogarithmic.addActionListener(new ActionListener() {
+		xLogarithmicCheckBoxMenuItem = new JCheckBoxMenuItem("X axis Logarithmic");
+		xLinearCheckBoxMenuItem = new JCheckBoxMenuItem("X axis Linear");
+		xLinearCheckBoxMenuItem.setState(true);
+		scaleMenu.add(xLinearCheckBoxMenuItem);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (yLog == false) {
-					yLinear.setState(false);
-					yLog = true;
-					yLin = false;
-					// try {
+		xLinearCheckBoxMenuItem.addActionListener(scaleMenuListener);
 
-					rebuildChart.rebuildChart(jListY);
-					/*
-					 * } catch (IllegalLogException ex) { logarithmic.setState(false); log = false;
-					 * lin = true; try { rebuildChart(jListY); } catch (IllegalLogException ex2) {
-					 * //throw new RuntimeException("THIS CAN NOT HAPPEN!"); } }
-					 */
-				}
-			}
-		});
+		scaleMenu.add(xLogarithmicCheckBoxMenuItem);
 
-		xLogarithmic = new JCheckBoxMenuItem("X axis Logarithmic");
-		xLinear = new JCheckBoxMenuItem("X axis Linear");
-		scale.add(xLinear);
-		xLinear.setState(true);
-
-		xLog = false;
-		xLin = true;
-
-		xLinear.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (xLog == true) {
-					xLogarithmic.setState(false);
-					xLog = false;
-					xLin = true;
-
-					rebuildChart.rebuildChart(jListY);
-
-				}
-			}
-
-		});
-		scale.add(xLogarithmic);
-
-		xLogarithmic.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (xLog == false) {
-					xLinear.setState(false);
-					xLog = true;
-					xLin = false;
-					// try {
-
-					rebuildChart.rebuildChart(jListY);
-					/*
-					 * } catch (IllegalLogException ex) { logarithmic.setState(false); log = false;
-					 * lin = true; try { rebuildChart(jListY); } catch (IllegalLogException ex2) {
-					 * //throw new RuntimeException("THIS CAN NOT HAPPEN!"); } }
-					 */
-				}
-			}
-		});
+		xLogarithmicCheckBoxMenuItem.addActionListener(scaleMenuListener);
 
 		internalFrame.setVisible(true);
 
 	}
 
 	public void setChartPanel(ChartPanel p) {
-		
+
 		filePane.setVisible(false);
 		if (chartPanel != null) {
 			filePane.remove(chartPanel);
@@ -281,6 +212,43 @@ public class MyInternalFrame {
 	public void setPlot(XYPlot plot) {
 		// TODO Auto-generated method stub
 		this.plot = plot;
+	}
+
+	public RebuildChart getRebuildChart() {
+		return rebuildChart;
+	}
+
+	public void setyLin(boolean yLin) {
+		this.yLin = yLin;
+	}
+
+	public void setyLog(boolean yLog) {
+		this.yLog = yLog;
+	}
+
+	public void setxLin(boolean xLin) {
+		this.xLin = xLin;
+	}
+
+	public void setxLog(boolean xLog) {
+		this.xLog = xLog;
+	}
+
+	public void setxLinearCheckBoxMenuItem(boolean b) {
+		xLinearCheckBoxMenuItem.setState(b);
+	}
+
+	public void setxLogCheckBoxMenuItem(boolean b) {
+		// TODO Auto-generated method stub
+		xLogarithmicCheckBoxMenuItem.setState(b);
+	}
+
+	public void setyLogarithmicCheckBoxMenuItem(boolean b) {
+		yLogarithmicCheckBoxMenuItem.setState(b);
+	}
+
+	public void setyLinearCheckBoxMenuItem(boolean b) {
+		yLinearCheckBoxMenuItem.setState(b);
 	}
 
 }

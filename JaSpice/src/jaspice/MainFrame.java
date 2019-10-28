@@ -1,8 +1,6 @@
 package jaspice;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,20 +26,17 @@ public class MainFrame extends JFrame {
 	private JMenuItem saveFileMenuItem = new JMenuItem(
 			"Save the chart for the chosen frame as *.png file (right click on the chart for pdf/jpeg files)");
 	private JMenu viewMenu = new JMenu("View");
-	private JMenu fileMenu=new JMenu("File");
+	private JMenu fileMenu = new JMenu("File");
 	private JMenu helpMenu = new JMenu("Help");
-	private JMenuItem saveFileMenuitem;
+
 	private JMenuItem instructionsHelpMenuItem;
 	private String filePath;
 	private ChartPanel p;
 
-	
-	
-	private static MainFrame mainFrame=new MainFrame(new OpenFileMenuItemListener());
-	
-	private  MainFrame(OpenFileMenuItemListener openFileMenuItemListener) {
+	private static MainFrame mainFrame = new MainFrame(new OpenFileMenuItemListener());
 
-		
+	private MainFrame(OpenFileMenuItemListener openFileMenuItemListener) {
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(10000, 8000);
 		setBounds(100, 100, 450, 300);
@@ -75,12 +70,12 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 	}
 
-	public void addNewInternalFrame(RawFileContent content, ListSelection listSelectionListener, String name,
+	public void addNewInternalFrame(RawFileContent content, String name,
 			MyInternalFrameListener internalFrameListener) {
 
 		int id = getInternalFrames().size();
 
-		MyInternalFrame nf = new MyInternalFrame(content, listSelectionListener, name + " (" + id + ")",
+		MyInternalFrame nf = new MyInternalFrame(content, new ListSelection(), name + " (" + id + ")",
 				internalFrameListener);
 
 		JMenuItem viewMenuItem = new JMenuItem(nf.getInternalFrame().getTitle());
@@ -93,18 +88,12 @@ public class MainFrame extends JFrame {
 
 		getViewMenu().add(viewMenuItem);
 
-		//internalFrameListener.setFrame(this);
-
-		viewMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				nf.getInternalFrame().moveToFront();
-				nf.getInternalFrame().setLocation(200, 200);
-
-			}
-		});
-
+		// internalFrameListener.setFrame(this);
+		ViewMenuItemListener viewMenuItemListener=new ViewMenuItemListener();
+				viewMenuItemListener.setMyFrame(nf);
+		viewMenuItem.addActionListener(viewMenuItemListener);
+	
+	
 	}
 
 	public String getFilePath() {
@@ -129,10 +118,6 @@ public class MainFrame extends JFrame {
 
 	public JMenu getViewMenu() {
 		return viewMenu;
-	}
-
-	public JMenuItem getSaveFileMenuitem() {
-		return saveFileMenuitem;
 	}
 
 	public JMenuItem getSaveFileMenuItem() {

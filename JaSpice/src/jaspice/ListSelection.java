@@ -22,7 +22,7 @@ public class ListSelection implements ListSelectionListener {
 
 			System.out.println(String.valueOf(theList.getSelectedIndex()));
 
-			myFrame.rebuildChart.rebuildChart(theList);
+			myFrame.getRebuildChart().rebuildChart(theList);
 
 		}
 	}
