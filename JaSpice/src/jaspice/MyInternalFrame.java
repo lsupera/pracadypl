@@ -28,8 +28,6 @@ public class MyInternalFrame {
 	private RawFileContent content;
 	private List<Map.Entry<String, String>> vars;
 
-	private JButton fileButton;
-
 	private String filePath;
 	private ChartPanel chartPanel;
 
@@ -51,7 +49,7 @@ public class MyInternalFrame {
 		internalFrameListener.setFrame(this);
 
 		jListY = new JList(vars.toArray());
-		;
+
 		internalFrame = new MyInternalFrameView(name, true, true, true, true, scaleMenuListener, jListY,
 				listSelectionListener);
 		scaleMenuListener.setMyFrameView(internalFrame);
@@ -59,10 +57,6 @@ public class MyInternalFrame {
 		buildChart = new BuildChart(internalFrame, content);
 		getBuildChart().setMyInternalFrame(this);
 
-	}
-
-	public JButton getFileButton() {
-		return fileButton;
 	}
 
 	public String getFilePath() {
