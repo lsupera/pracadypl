@@ -58,7 +58,7 @@ public class MainFrame extends JFrame {
 		helpMenu.add(instructionsHelpMenuItem);
 
 		HelpMenuListener myHelpMenuListener = new HelpMenuListener();
-		myHelpMenuListener.setFrame(this);
+		
 		instructionsHelpMenuItem.addActionListener(myHelpMenuListener);
 
 		JMenuItem openFileMenuItem = new JMenuItem("Open file");
@@ -135,5 +135,7 @@ public class MainFrame extends JFrame {
 	public static MainFrame getMainFrame() {
 		return mainFrame;
 	}
-
+	
+	
+	
 }

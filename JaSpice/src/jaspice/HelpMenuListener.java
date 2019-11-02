@@ -6,12 +6,12 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 public class HelpMenuListener implements ActionListener {
-	MainFrame mainFrame;
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		 
-		JOptionPane.showMessageDialog(mainFrame,
+		JOptionPane.showMessageDialog(MainFrame.getMainFrame(),
 				"Use open file to load a *.raw file. \n You can load multiple files at the same tiem.\n Navigate between files(open frames) using view menu. "
 						+ "\n If you wish to save a chart you can use save option (*.png) in file menu (active for a currently selected frame) \n or right click on the chart (*.png, *.pdf,*.jpeg) \n "
 						+ " You cannot save anything if no chart is created.\n"
@@ -23,8 +23,6 @@ public class HelpMenuListener implements ActionListener {
 				"PLOTspice instructions", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public void setFrame(MainFrame f) {
-		mainFrame = f;
-	}
+	
 
 }

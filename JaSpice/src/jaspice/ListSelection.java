@@ -20,9 +20,8 @@ public class ListSelection implements ListSelectionListener {
 
 			JList<String> theList = (JList) e.getSource();
 
-			System.out.println(String.valueOf(theList.getSelectedIndex()));
-
-			myFrame.getRebuildChart().rebuildChart(theList);
+			myFrame.getBuildChart().buildChart(theList);
+			
 
 		}
 	}

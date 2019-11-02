@@ -7,30 +7,33 @@ import javax.swing.JCheckBoxMenuItem;
 
 public class ScaleMenuListner implements ActionListener {
 	MyInternalFrame myFrame;
+	MyInternalFrameView myInternalFrameView;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-
-		myFrame.setxLog(false);
-		myFrame.setxLin(true);
-		myFrame.setyLog(false);
-		myFrame.setyLin(true);
+		
+		
+		
+		myInternalFrameView.setxLog(false);
+		myInternalFrameView.setxLin(true);
+		myInternalFrameView.setyLog(false);
+		myInternalFrameView.setyLin(true);
 		
 		switch (((JCheckBoxMenuItem) e.getSource()).getText()) {
 		case "X axis Logarithmic": {
 			if (((JCheckBoxMenuItem) e.getSource()).getState() == true) {
 
-				myFrame.setxLog(true);
-				myFrame.setxLin(false);
-				myFrame.setxLinearCheckBoxMenuItem(false);
-				myFrame.getRebuildChart().rebuildChart(myFrame.getjListY());
+				myInternalFrameView.setxLog(true);
+				myInternalFrameView.setxLin(false);
+				myInternalFrameView.setxLinearCheckBoxMenuItem(false);
+				myFrame.getBuildChart().buildChart(myFrame.getjListY());
 
 			} else {
-				myFrame.setxLog(false);
-				myFrame.setxLin(true);
-				myFrame.setxLinearCheckBoxMenuItem(true);
-				myFrame.getRebuildChart().rebuildChart(myFrame.getjListY());
+				myInternalFrameView.setxLog(false);
+				myInternalFrameView.setxLin(true);
+				myInternalFrameView.setxLinearCheckBoxMenuItem(true);
+				myFrame.getBuildChart().buildChart(myFrame.getjListY());
 
 			}
 			break;
@@ -39,16 +42,16 @@ public class ScaleMenuListner implements ActionListener {
 		case "X axis Linear": {
 			if (((JCheckBoxMenuItem) e.getSource()).getState() == true) {
 
-				myFrame.setxLog(false);
-				myFrame.setxLin(true);
-				myFrame.setxLogCheckBoxMenuItem(false);
-				myFrame.getRebuildChart().rebuildChart(myFrame.getjListY());
+				myInternalFrameView.setxLog(false);
+				myInternalFrameView.setxLin(true);
+				myInternalFrameView.setxLogCheckBoxMenuItem(false);
+				myFrame.getBuildChart().buildChart(myFrame.getjListY());
 
 			} else {
-				myFrame.setxLog(true);
-				myFrame.setxLin(false);
-				myFrame.setxLogCheckBoxMenuItem(true);
-				myFrame.getRebuildChart().rebuildChart(myFrame.getjListY());
+				myInternalFrameView.setxLog(true);
+				myInternalFrameView.setxLin(false);
+				myInternalFrameView.setxLogCheckBoxMenuItem(true);
+				myFrame.getBuildChart().buildChart(myFrame.getjListY());
 
 			}
 			break;
@@ -56,16 +59,16 @@ public class ScaleMenuListner implements ActionListener {
 		case "Y axis Logarithmic": {
 			if (((JCheckBoxMenuItem) e.getSource()).getState() == true) {
 
-				myFrame.setyLog(true);
-				myFrame.setyLin(false);
-				myFrame.setyLinearCheckBoxMenuItem(false);
-				myFrame.getRebuildChart().rebuildChart(myFrame.getjListY());
+				myInternalFrameView.setyLog(true);
+				myInternalFrameView.setyLin(false);
+				myInternalFrameView.setyLinearCheckBoxMenuItem(false);
+				myFrame.getBuildChart().buildChart(myFrame.getjListY());
 
 			} else {
-				myFrame.setyLog(false);
-				myFrame.setyLin(true);
-				myFrame.setyLinearCheckBoxMenuItem(true);
-				myFrame.getRebuildChart().rebuildChart(myFrame.getjListY());
+				myInternalFrameView.setyLog(false);
+				myInternalFrameView.setyLin(true);
+				myInternalFrameView.setyLinearCheckBoxMenuItem(true);
+				myFrame.getBuildChart().buildChart(myFrame.getjListY());
 
 			}
 			break;
@@ -73,16 +76,16 @@ public class ScaleMenuListner implements ActionListener {
 		case "Y axis Linear": {
 			if (((JCheckBoxMenuItem) e.getSource()).getState() == true) {
 
-				myFrame.setyLog(false);
-				myFrame.setyLin(true);
-				myFrame.setyLogarithmicCheckBoxMenuItem(false);
-				myFrame.getRebuildChart().rebuildChart(myFrame.getjListY());
+				myInternalFrameView.setyLog(false);
+				myInternalFrameView.setyLin(true);
+				myInternalFrameView.setyLogarithmicCheckBoxMenuItem(false);
+				myFrame.getBuildChart().buildChart(myFrame.getjListY());
 			}
 			else {
-				myFrame.setyLog(true);
-				myFrame.setyLin(false);
-				myFrame.setyLogarithmicCheckBoxMenuItem(true);
-				myFrame.getRebuildChart().rebuildChart(myFrame.getjListY());
+				myInternalFrameView.setyLog(true);
+				myInternalFrameView.setyLin(false);
+				myInternalFrameView.setyLogarithmicCheckBoxMenuItem(true);
+				myFrame.getBuildChart().buildChart(myFrame.getjListY());
 			}
 			break;
 
@@ -94,4 +97,8 @@ public class ScaleMenuListner implements ActionListener {
 	public void setFrame(MyInternalFrame f) {
 		myFrame = f;
 	}
+	public void setMyFrameView (MyInternalFrameView f) {
+		 myInternalFrameView = f;
+	}
+	
 }

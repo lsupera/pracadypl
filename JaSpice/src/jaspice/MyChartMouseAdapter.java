@@ -19,9 +19,9 @@ public class MyChartMouseAdapter implements ChartMouseListener {
 
     Crosshair xCrosshair;
     Crosshair yCrosshair;
-    private MyInternalFrame myFrame;
+    private MyInternalFrameView myFrame;
 
-    public MyChartMouseAdapter(MyInternalFrame myFrame, Crosshair xCrosshair, Crosshair yCrosshair) {
+    public MyChartMouseAdapter(MyInternalFrameView myFrame, Crosshair xCrosshair, Crosshair yCrosshair) {
         super();
         this.myFrame = myFrame;
         this.xCrosshair = xCrosshair;
@@ -30,7 +30,7 @@ public class MyChartMouseAdapter implements ChartMouseListener {
 
     @Override
     public void chartMouseMoved(ChartMouseEvent event) {
-        Rectangle2D dataArea = myFrame.getChartPanel().getScreenDataArea();
+        Rectangle2D dataArea = myFrame.chartPanel.getScreenDataArea();
         JFreeChart chart = event.getChart();
         XYPlot plot = (XYPlot) chart.getPlot();
         ValueAxis xAxis = plot.getDomainAxis();

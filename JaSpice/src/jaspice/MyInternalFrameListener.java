@@ -70,7 +70,7 @@ public class MyInternalFrameListener implements InternalFrameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if (myFrame.getLineChart() != null) {
+				if (myFrame.getChartPanel() != null) {
 					JFileChooser fcSave = new JFileChooser(
 							lastPath == null ? FileSystemView.getFileSystemView().getHomeDirectory()
 									: new File(lastPath));
